@@ -1,0 +1,54 @@
+
+._div{
+    background-color: #3a0968;
+    color: white;
+    width: fit-content;
+    padding: 15px;
+    border-radius: 15px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+._input_div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+._input{
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    margin-left: 5px;
+    padding: 5px;
+}
+._button{
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+._p{
+    color: white;
+    margin: 5px 0;
+}
+
+#char_div{
+    padding: 10px;
+}
+
+._chars_rows{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+._chars_rows:hover{
+    background-color: #ffffff41;
+}
+
+#chars_header{
+    background-color: #0f4d00;
+}

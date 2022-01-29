@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    
+</head>
+<body>
+    <h1 class="entry-title">Divine Throne Of Primordial Blood 53</h1>
+    <p>كان سو تشن يقوم بواجباته هو و سو تشيان</p>
+    <div id="footer">dsfs</div>
+
+
+    <script>
+
+
+        var head = document.getElementsByTagName("head")[0]
+        head.innerHTML = head.innerHTML + `
+        <style>
+        ._div{
+            background-color: #3a0968;
+            color: white;
+            width: fit-content;
+            padding: 15px;
+            border-radius: 15px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        ._input_div{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        ._input{
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+            margin-left: 5px;
+            padding: 5px;
+        }
+        ._button{
+            color: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+        ._p{
+            color: white;
+            margin: 5px 0;
+        }
+
+        #char_div{
+            padding: 10px;
+        }
+
+        ._chars_rows{
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        ._chars_rows:hover{
+            background-color: #ffffff41;
+        }
+
+        #chars_header{
+            background-color: #0f4d00;
+        }
+        </style>`
+
+
+
+
+        var footer = document.getElementById("footer")
+        footer.innerHTML = `
+            <div class="_div">
+            <div class="_input_div">
+                <label>الاسم: </label>
+                <input id="name_inp" class="_input" type="text">
+            </div>
+            <div class="_input_div">
+                <label>اللون: </label>
+                <input id="color_inp" class="_input" type="text">
+            </div>
+
+            <div class="_input_div">
+                <label>الدور: </label>
+                <input id="role_inp" class="_input" type="text">
+            </div>
+            <button id="add_btn" class="_button" style="background-color: green;"">اضافة شخصية</button>
+            <button class="_button" style="background-color: rgb(204, 40, 11);" onclick="deleteChar()">حذف شخصية</button>
+            <div id="char_div"></div>
+            </div>
+        ` + footer.innerHTML
+
+
+
+        // =================== Variables ===================
+        var novelName_h1 = document.getElementsByClassName("entry-title")[0];
+        var name_inp = document.getElementById("name_inp");
+        var color_inp = document.getElementById("color_inp");
+        var role_inp = document.getElementById("role_inp");
+        var char_div = document.getElementById("char_div");
+        var add_btn = document.getElementById("add_btn");
+
+        var novel_name = "Novel Name"
+        var novels = {};
+        var characters = {};
+        var char = {}
+
+        loadCharacters()
+
+        add_btn.addEventListener("click", addChar())
+
+
+        function addChar() {
+            char = {}
+            char.name = name_inp.value
+            char.color = color_inp.value
+            char.role = role_inp.value
+
+            characters[char.name] = char
+            saveCharacters();
+        }
+
+        function deleteChar() {
+            delete characters[name_inp.value]
+            saveCharacters();
+        }
+
+
+        function saveCharacters() {
+            novels[novel_name] = characters
+            localStorage.setItem("novels", JSON.stringify(novels))
+            loadCharacters()
+        }
+
+        function loadChar(name) {
+            char = characters[name]
+            name_inp.value = char.name
+            color_inp.value = char.color
+            role_inp.value = char.role
+        }
+
+        function loadCharacters() {
+            novel_name = novelName_h1.innerHTML.split(" ")
+            novel_name.pop()
+            novel_name = novel_name.join(" ")
+
+            if (localStorage.getItem("novels") == null){
+                localStorage.setItem("novels", JSON.stringify(novels))
+            }
+            novels = JSON.parse(localStorage.getItem("novels"))
+            if (novels[novel_name] == null){
+                novels[novel_name] = {}
+                localStorage.setItem("novels", JSON.stringify(novels))
+            }
+            characters = novels[novel_name]
+
+            var characters_p = `<div id="chars_header" class="_chars_rows"><p class="_p">الاسم</p><p class="_p">اللون</p><p class="_p">الدور</p></div>`
+            for (const key in characters) {
+
+                if (Object.hasOwnProperty.call(characters, key)) {
+                    char = characters[key]
+                    characters_p += `<div class="_chars_rows" onclick="loadChar('`+char.name+`')"><p class="_p">`+char.name+`</p><p class="_p" style="color: `+char.color+`;">`+char.color+`</p><p class="_p">`+char.role+`</p></div>`
+                }
+            }
+
+            char_div.innerHTML = characters_p
+
+            // =======================================================================
+            // =======================================================================
+            // =======================================================================
+
+            var replaceDict = [
+                ["خطوات تسلل الضباب","خطوات الضباب", "skill"]
+            ];
+
+            var tagsList = document.getElementsByTagName("p");
+            for (var i = 0; i < tagsList.length; i++){
+                var innerHTML = tagsList[i].innerHTML;
+
+                replaceDict.forEach(name=>{
+                    var index = innerHTML.indexOf(name[0]);
+                    while (index >= 0){
+                        innerHTML = innerHTML.substring(0,index) + name[1] + innerHTML.substring(index + name[0].length);
+                        index = innerHTML.indexOf(name[0], index+=5);
+                    }
+                    tagsList[i].innerHTML = innerHTML;
+                });
+
+                for (const key in characters) {
+                    if (Object.hasOwnProperty.call(characters, key)) {
+                        char = characters[key];
+                        var index = innerHTML.indexOf(char.name);
+                        while (index >= 0){
+                            innerHTML = innerHTML.substring(0,index) + "<span style='color: "+ char.color + "'>" + char.name + "</span>" + innerHTML.substring(index + char.name.length);
+                            index = innerHTML.indexOf(char.name, index+=30);
+                        }
+                        tagsList[i].innerHTML = innerHTML;
+                    }
+                }
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
