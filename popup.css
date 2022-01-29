@@ -42,13 +42,13 @@
 
 ._chars_rows{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
 }
 
 ._chars_rows:hover{
     background-color: #ffffff41;
 }
 
-#chars_header{
+._chars_header{
     background-color: #0f4d00;
 }
