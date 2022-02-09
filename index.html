@@ -8,23 +8,23 @@
     <link rel='stylesheet' type='text/css' media='screen' href='popup.css'>
 </head>
 <body>
-    <h1 class="entry-title">Divine Throne Of Primordial Blood 53</h1>
-    <p>كان سو تشن يقوم بواجباته هو و سو تشيان</p>
-    <div id="footer">dsfs</div>
-
     <div class="_div">
         <div class="_input_div">
             <label>الاسم: </label>
             <input id="name_inp" class="_input" type="text">
         </div>
-        <div class="_input_div">
-            <label>اللون: </label>
-            <input id="color_inp" class="_input" type="text">
-        </div>
 
         <div class="_input_div">
             <label>الدور: </label>
-            <input id="role_inp" class="_input" type="text">
+            <input id="role_inp" class="_input" list="roles">
+            <datalist id="roles">
+                <option value="يطل">
+                <option value="صديق">
+                <option value="عدو">
+                <option value="انثى">
+                <option value="مهارة">
+                <option value="مدرب">
+              </datalist>
         </div>
             <button id="add_btn" class="_button" style="background-color: green;">اضافة شخصية</button>
             <button id="delete_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف شخصية</button>
