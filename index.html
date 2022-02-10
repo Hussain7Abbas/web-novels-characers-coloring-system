@@ -18,7 +18,7 @@
             <label>الدور: </label>
             <input id="role_inp" class="_input" list="roles">
             <datalist id="roles">
-                <option value="يطل">
+                <option value="بطل">
                 <option value="صديق">
                 <option value="عدو">
                 <option value="انثى">
@@ -26,10 +26,16 @@
                 <option value="مدرب">
               </datalist>
         </div>
+        <div class="_btn_div">
             <button id="add_btn" class="_button" style="background-color: green;">اضافة شخصية</button>
             <button id="delete_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف شخصية</button>
-            <div id="char_div"></div>
         </div>
-        <script src='popup.js' type='text/javascript'></script>
+        <div class="_btn_div">
+            <button id="put_btn" class="_button" style="background-color: blueviolet;">تصدير</button>
+            <button id="fetch_btn" class="_button" style="background-color: blueviolet;">استيراد</button>
+        </div>
+        <div id="char_div"></div>
+    </div>
+    <script src='popup.js' type='text/javascript'></script>
 </body>
 </html>

@@ -6,6 +6,8 @@
     var add_btn = document.getElementById("add_btn");
     var delete_btn = document.getElementById("delete_btn");
     var char_div = document.getElementById("char_div");
+    var put_btn = document.getElementById("put_btn");
+    var fetch_btn = document.getElementById("fetch_btn");
 
     let novel_name = ""
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
@@ -23,9 +25,56 @@
     // listens to the click of the button into the popup content
     add_btn.addEventListener('click', addChar)
     delete_btn.addEventListener('click', deleteChar)
+    put_btn.addEventListener('click', putNovels)
+    fetch_btn.addEventListener('click', fetchNovels)
 
     loadCharacters()
     
+
+
+
+
+
+
+
+
+    function putNovels(){
+        JSON.parse(httpPut("https://jsonblob.com/api/941250293765783552"));
+        alert("تم الحفظ")
+    }
+
+    function fetchNovels(){
+        novels = JSON.parse(httpGet("https://jsonblob.com/api/941250293765783552"));
+        characters = novels[novel_name]
+        saveCharacters()
+        loadCharacters()
+        alert("تم التحديث")
+    }
+
+    function httpGet(theUrl){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", theUrl, false );
+        xmlHttp.setRequestHeader('Content-Type', 'application/json');
+        xmlHttp.setRequestHeader('Accept', 'application/json');
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+    }
+
+    function httpPut(theUrl){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("PUT", theUrl, true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/json');
+        xmlHttp.setRequestHeader('Accept', 'application/json');
+        xmlHttp.send(JSON.stringify(novels));
+    }
+
+
+
+
+
+
+
+
     function addChar() {
         char = {};
         char.name = name_inp.value;
@@ -51,8 +100,9 @@
                 char.color = "#c3940f";
                 break;
             default:
-                char.color = char.role.split(" ")[1];
-                char.role = char.role.split(" ")[0];
+                char.color = char.role.split("   ")[1];
+                char.role = char.role.split("   ")[0];
+                break;
         }
         
         console.log(char);
