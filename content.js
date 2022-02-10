@@ -2,6 +2,58 @@
 // =======================================================================
 // =======================================================================
 
+
+let head = document.getElementsByTagName("head")[0]
+
+head.innerHTML = head.innerHTML + `<style>/* Tooltip container */
+.tooltip1 {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Tooltip text */
+  .tooltip1 .tooltiptext1 {
+    visibility: hidden;
+    width: fit-content;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 14px;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip1:hover .tooltiptext1 {
+    visibility: visible;
+  }
+
+  .tooltip1 .tooltiptext1::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  }
+
+    .بطل{color: #6e9bff;}
+    .صديق{color: #55db3d;}
+    .عدو{color: #ff7878;}
+    .انثى{color: #ff6fd6;}
+    .مهارة{color: #ceab00;}
+    .مدرب{color: #c3940f;}
+</style>`
+
 let novel_url = document.URL.split("/");
 let novel_url_name = novel_url[novel_url.length-2].split("-");
 novel_url_name.pop()
@@ -59,21 +111,12 @@ function replaceCharacters() {
     for (par of tagsList){
         var innerHTML = par.innerHTML;
 
-        // replaceDict.forEach(name=>{
-        //     var index = innerHTML.indexOf(name[0]);
-        //     while (index >= 0){
-        //         innerHTML = innerHTML.substring(0,index) + name[1] + innerHTML.substring(index + name[0].length);
-        //         index = innerHTML.indexOf(name[0], index+=5);
-        //     }
-        //     par.innerHTML = innerHTML;
-        // });
-
         for (const key in characters) {
             if (Object.hasOwnProperty.call(characters, key)) {
                 char = characters[key];
                 var index = innerHTML.indexOf(char.name);
                 while (index >= 0){
-                    innerHTML = innerHTML.substring(0,index) + "<span style='color: "+ char.color + "'>" + char.name + "</span>" + innerHTML.substring(index + char.name.length);
+                    innerHTML = innerHTML.substring(0,index) + `<span class="tooltip1 `+ char.role +`">` + char.name + `<span class="tooltiptext1">`+ char.info +`</span></span>` + innerHTML.substring(index + char.name.length);
                     index = innerHTML.indexOf(char.name, index+=30);
                 }
                 par.innerHTML = innerHTML;

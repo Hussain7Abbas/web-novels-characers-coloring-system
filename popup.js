@@ -3,6 +3,7 @@
     // =================== variables ===================
     var name_inp = document.getElementById("name_inp");
     var role_inp = document.getElementById("role_inp");
+    var info_inp = document.getElementById("info_inp");
     var add_btn = document.getElementById("add_btn");
     var delete_btn = document.getElementById("delete_btn");
     var char_div = document.getElementById("char_div");
@@ -79,6 +80,7 @@
         char = {};
         char.name = name_inp.value;
         char.role = role_inp.value;
+        char.info = info_inp.value;
 
         switch (char.role) {
             case "":
@@ -136,6 +138,7 @@
         char = characters[name]
         name_inp.value = char.name
         role_inp.value = char.role
+        info_inp.value = char.info
     }
 
     function loadCharacters() {
@@ -174,6 +177,7 @@
 
 
     function createRow(columns, type="row") {
+
         var row_div = document.createElement('div')
         if (type=="row"){
             row_div.className = "_chars_rows"
@@ -195,7 +199,20 @@
         role_p.className = "_p"
         row_div.appendChild(role_p)
 
-        return row_div
+        
+        var info_span = document.createElement('span')
+        info_span.appendChild(document.createTextNode(columns.info))
+        info_span.className = "tooltiptext1"
+
+        var row_container = document.createElement('div')
+        row_container.className = "tooltip1"
+        row_container.appendChild(row_div)
+        if (type=="row"){
+            row_container.appendChild(info_span)
+        }
+
+
+        return row_container
 
     }
 
