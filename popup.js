@@ -39,7 +39,7 @@
 
 
     function putNovels(){
-        JSON.parse(httpPut("https://jsonblob.com/api/941250293765783552"));
+        httpPut("https://jsonblob.com/api/941250293765783552");
         alert("تم الحفظ")
     }
 
@@ -81,6 +81,9 @@
         char.role = role_inp.value;
 
         switch (char.role) {
+            case "":
+                alert("يرجى ادخال الدور")
+                return
             case "بطل":
                 char.color = "#6e9bff";
                 break;
