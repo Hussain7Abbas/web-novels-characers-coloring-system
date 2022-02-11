@@ -160,7 +160,7 @@ function deleteRep() {
 function saveCharacters() {
     novels[novel_name]["characters"] = characters
     novels[novel_name]["replaces"] = replaces
-    chrome.storage.sync.set({"novels":novels},()=>{
+    chrome.storage.local.set({"novels":novels},()=>{
         chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
             var activeTab = tabs[0];
             chrome.tabs.sendMessage(activeTab.id, novels[novel_name]);
@@ -179,7 +179,7 @@ function loadChar(name) {
 function loadCharacters() {
 
     try {
-        chrome.storage.sync.get("novels",(data)=>{
+        chrome.storage.local.get("novels",(data)=>{
             console.log(data);
             novels = data.novels
             if (novels[novel_name] == undefined){
@@ -206,11 +206,16 @@ function loadCharacters() {
 
 
             rep_char_div.innerHTML = ""
-            rep_char_div.appendChild(createRepRow({"name":"name", "with":"with"}, "header"))
+            rep_char_div.appendChild(createRepRow({"name":"name", "with":"with"}, "header", {}))
             for (const key in replaces) {
                 if (Object.hasOwnProperty.call(replaces, key)) {
                     rep = replaces[key]
-                    rep_char_div.appendChild(createRepRow(rep))
+                    let char1 = characters[rep.with];
+                    if (char1 == undefined){
+                        char1={"color":"white", "info":"بدون وصف"};
+                    }
+                    rep_char_div.appendChild(createRepRow(rep, "row", char1));
+
                 }
             }
             console.log(rep_char_div);
@@ -233,38 +238,38 @@ function loadCharacters() {
 
 
 
-function createRow(columns, type="row") {
+function createRow(_columns, _type="row") {
 
     var row_div = document.createElement('div')
-    if (type=="row"){
+    if (_type=="row"){
         row_div.className = "_chars_rows"
-        // row_div.addEventListener('click', loadChar(columns.name))
+        // row_div.addEventListener('click', loadChar(_columns.name))
     }else{
         row_div.className = "_chars_header _chars_rows"
     }
     
 
     var name_p = document.createElement('p')
-    name_p.appendChild(document.createTextNode(columns.name))
-    name_p.style['color'] = columns.color
+    name_p.appendChild(document.createTextNode(_columns.name))
+    name_p.style['color'] = _columns.color
     name_p.className = "_p"
     row_div.appendChild(name_p)
 
     var role_p = document.createElement('p')
-    role_p.appendChild(document.createTextNode(columns.role))
-    name_p.style['color'] = columns.color
+    role_p.appendChild(document.createTextNode(_columns.role))
+    role_p.style['color'] = _columns.color
     role_p.className = "_p"
     row_div.appendChild(role_p)
 
     
     var info_span = document.createElement('span')
-    info_span.appendChild(document.createTextNode(columns.info))
+    info_span.appendChild(document.createTextNode(_columns.info))
     info_span.className = "tooltiptext1"
 
     var row_container = document.createElement('div')
     row_container.className = "tooltip1"
     row_container.appendChild(row_div)
-    if (type=="row"){
+    if (_type=="row"){
         row_container.appendChild(info_span)
     }
 
@@ -273,27 +278,44 @@ function createRow(columns, type="row") {
 
 }
 
-function createRepRow(columns, type="row") {
+function createRepRow(_columns, _type="row", _char) {
 
     var row_div = document.createElement('div')
-    if (type=="row"){
+    if (_type=="row"){
         row_div.className = "_chars_rows"
+        console.log(_char);
     }else{
         row_div.className = "_chars_header _chars_rows"
     }
     
 
     var name_p = document.createElement('p')
-    name_p.appendChild(document.createTextNode(columns.name))
+    name_p.appendChild(document.createTextNode(_columns.name))
+    name_p.style['color'] = _char.color
     name_p.className = "_p"
     row_div.appendChild(name_p)
 
     var role_p = document.createElement('p')
-    role_p.appendChild(document.createTextNode(columns.with))
+    role_p.appendChild(document.createTextNode(_columns.with))
+    role_p.style['color'] = _char.color
     role_p.className = "_p"
     row_div.appendChild(role_p)
 
-    return row_div
+
+
+    var info_span = document.createElement('span')
+    info_span.appendChild(document.createTextNode(_char.info))
+    info_span.className = "tooltiptext1"
+
+    var row_container = document.createElement('div')
+    row_container.className = "tooltip1"
+    row_container.appendChild(row_div)
+    if (_type=="row"){
+        row_container.appendChild(info_span)
+    }
+
+
+    return row_container
 
 }
 

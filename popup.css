@@ -1,4 +1,11 @@
-body{background-color: #2c3e50;}
+@font-face {
+  font-family: "Noto Kufi Arabic";
+  src: url("./assets/NotoKufiArabic.ttf");
+}
+
+*{font-family: 'Noto Kufi Arabic', sans-serif; font-size: 16px; margin: 0; padding: 0;}
+
+body{background-color: #222;}
 ._div{
     color: white;
     width: fit-content;
@@ -30,7 +37,7 @@ body{background-color: #2c3e50;}
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 ._button{
@@ -39,6 +46,7 @@ body{background-color: #2c3e50;}
     padding: 10px;
     margin-bottom: 5px;
     width: 49%;
+    border: 0px;
 }
 ._p{
     color: white;
@@ -46,7 +54,7 @@ body{background-color: #2c3e50;}
 }
 
 ._char_div{
-    padding: 10px;
+    padding: 15px 0px;
     display: flex;
     flex-direction: column;
 }
@@ -54,6 +62,7 @@ body{background-color: #2c3e50;}
 ._chars_rows{
     display: flex;
     justify-content: space-around;
+    border-bottom: dashed 1px white;
 }
 
 ._chars_rows p{
@@ -66,7 +75,8 @@ body{background-color: #2c3e50;}
 }
 
 ._chars_header{
-    background-color: #0f4d00;
+    background-color: #2a2a2a;
+    border-bottom: solid 1px white;
 }
 
 
@@ -127,10 +137,7 @@ body{background-color: #2c3e50;}
 /* Style the tab */
 .tab {
     overflow: hidden;
-    border: 1px solid #ccc;
     background-color: #f1f1f1;
-    width: 280px;
-    margin: auto;
   }
   
   /* Style the buttons inside the tab */
@@ -159,7 +166,7 @@ body{background-color: #2c3e50;}
   /* Style the tab content */
   .tabcontent {
     display: none;
-    padding: 6px 12px;
+    padding: 0px 12px;
     -webkit-animation: fadeEffect 1s;
     animation: fadeEffect 1s;
   }

@@ -73,7 +73,7 @@ loadCharacters()
 function loadCharacters() {
 
     try {
-        chrome.storage.sync.get("novels",(data)=>{
+        chrome.storage.local.get("novels",(data)=>{
             novels = data.novels
             if (novels[novel_name] == undefined){
                 characters = {}
