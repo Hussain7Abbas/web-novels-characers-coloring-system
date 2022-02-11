@@ -4,6 +4,7 @@
 }
 
 *{font-family: 'Noto Kufi Arabic', sans-serif; font-size: 14px; margin: 0; padding: 0;}
+input:focus{outline: none;}
 
 body{background-color: #222;}
 ._div{
@@ -29,8 +30,10 @@ body{background-color: #222;}
     color: black;
     border-radius: 10px;
     margin-right: 5px;
-    padding: 5px;
+    padding: 5px 10px;
+    border: 0;
 }
+
 
 ._btn_div{
     display: flex;
@@ -47,28 +50,36 @@ body{background-color: #222;}
     margin-bottom: 5px;
     width: 49%;
     border: 0px;
+    transition: box-shadow 0.3s;
 }
+
+._button:hover{
+  box-shadow: 0px 0px 5px 0px #ffffff47;
+}
+
 ._p{
     color: white;
     margin: 5px 0;
 }
 
 ._char_div{
-    padding: 15px 0px;
+    margin: 15px 0px;
     display: flex;
     flex-direction: column;
     overflow-y: hidden;
-    height: 227px;
+    cursor: pointer;
+    height: 223px;
 }
 
 ._char_div:hover{
-  overflow-y: scroll;
+  overflow-y: overlay;
 }
 
 ._chars_rows{
     display: flex;
     justify-content: space-around;
     border-bottom: dashed 1px white;
+    transition: background-color 0.3s;
 }
 
 ._active_row{
@@ -79,6 +90,8 @@ body{background-color: #222;}
     width: 50%;
     text-align: center;
     padding: 0 3px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 ._chars_rows:hover{
@@ -148,7 +161,6 @@ body{background-color: #222;}
 /* Style the tab */
 .tab {
     overflow: hidden;
-    background-color: #f1f1f1;
   }
   
   /* Style the buttons inside the tab */
@@ -162,16 +174,19 @@ body{background-color: #222;}
     transition: 0.3s;
     font-size: 17px;
     width: 50%;
+    color: #BDBDBD;
   }
   
   /* Change background color of buttons on hover */
   .tab button:hover {
-    background-color: #ddd;
+    border-bottom: solid 2px white;
+    color: white;
   }
   
   /* Create an active/current tablink class */
   .tab button.active {
-    background-color: #ccc;
+    border-bottom: solid 2px white;
+    color: white;
   }
   
   /* Style the tab content */
