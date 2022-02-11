@@ -169,12 +169,21 @@ function saveCharacters() {
     
 }
 
-function loadChar(name) {
-    char = characters[name]
-    name_inp.value = char.name
-    role_inp.value = char.role
-    info_inp.value = char.info
+function loadChar(_currentRow, _name) {
+    char = characters[_name];
+    name_inp.value = char.name;
+    role_inp.value = char.role;
+    info_inp.value = char.info;
+
+    selectActiveRow(_currentRow);
 }
+
+function loadRep(_currentRow, _name, _with) {
+    rep_name_inp.value = _name;
+    rep_with_inp.value = _with;
+    selectActiveRow(_currentRow);
+}
+
 
 function loadCharacters() {
 
@@ -193,38 +202,29 @@ function loadCharacters() {
             }
 
             char_div.innerHTML = ""
-            char_div.appendChild(createRow({"name":"name", "role":"role"}, "header"))
+            char_div.appendChild(createRow({"name":"الاسم", "role":"الدور"}, "header"))
             for (const key in characters) {
                 if (Object.hasOwnProperty.call(characters, key)) {
                     char = characters[key]
                     char_div.appendChild(createRow(char))
                 }
             }
-            console.log(char_div);
-
 
 
 
             rep_char_div.innerHTML = ""
-            rep_char_div.appendChild(createRepRow({"name":"name", "with":"with"}, "header", {}))
+            rep_char_div.appendChild(createRepRow({"name":"الاسم", "with":"الاستبدال"}, "header", {}))
             for (const key in replaces) {
                 if (Object.hasOwnProperty.call(replaces, key)) {
                     rep = replaces[key]
                     let char1 = characters[rep.with];
                     if (char1 == undefined){
-                        char1={"color":"white", "info":"بدون وصف"};
+                        char1={"color":"white", "info":""};
                     }
                     rep_char_div.appendChild(createRepRow(rep, "row", char1));
 
                 }
             }
-            console.log(rep_char_div);
-
-
-
-
-
-
 
 
         })
@@ -243,7 +243,6 @@ function createRow(_columns, _type="row") {
     var row_div = document.createElement('div')
     if (_type=="row"){
         row_div.className = "_chars_rows"
-        // row_div.addEventListener('click', loadChar(_columns.name))
     }else{
         row_div.className = "_chars_header _chars_rows"
     }
@@ -263,15 +262,17 @@ function createRow(_columns, _type="row") {
 
     
     var info_span = document.createElement('span')
+    if (_columns.info==""){_columns.info="بدون وصف"}
     info_span.appendChild(document.createTextNode(_columns.info))
     info_span.className = "tooltiptext1"
 
     var row_container = document.createElement('div')
     row_container.className = "tooltip1"
-    row_container.appendChild(row_div)
     if (_type=="row"){
         row_container.appendChild(info_span)
+        row_div.addEventListener('click', ()=>{loadChar(row_div, _columns.name)})
     }
+    row_container.appendChild(row_div)
 
 
     return row_container
@@ -283,7 +284,6 @@ function createRepRow(_columns, _type="row", _char) {
     var row_div = document.createElement('div')
     if (_type=="row"){
         row_div.className = "_chars_rows"
-        console.log(_char);
     }else{
         row_div.className = "_chars_header _chars_rows"
     }
@@ -304,15 +304,17 @@ function createRepRow(_columns, _type="row", _char) {
 
 
     var info_span = document.createElement('span')
+    if (_char.info==""){_char.info="بدون وصف"}
     info_span.appendChild(document.createTextNode(_char.info))
     info_span.className = "tooltiptext1"
 
     var row_container = document.createElement('div')
     row_container.className = "tooltip1"
-    row_container.appendChild(row_div)
     if (_type=="row"){
         row_container.appendChild(info_span)
+        row_div.addEventListener('click', ()=>{loadRep(row_div, _columns.name, _columns.with)})
     }
+    row_container.appendChild(row_div)
 
 
     return row_container
@@ -340,8 +342,13 @@ function openCity(currentBtn, cityName) {
 
 
 
-
-
+function selectActiveRow(_currentRow) {
+    rows = document.getElementsByClassName("_chars_rows");
+    for (i = 0; i < rows.length; i++) {
+        rows[i].className = rows[i].className.replace(" _active_row", "");
+    }
+    _currentRow.className += " _active_row";
+}
 
 
 
