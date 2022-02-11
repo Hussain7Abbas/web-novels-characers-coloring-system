@@ -63,6 +63,7 @@ console.log(novel_name);
 
 let novels = {}
 let characters = {}
+let replaces = {}
 
 
 loadCharacters()
@@ -73,15 +74,14 @@ function loadCharacters() {
 
     try {
         chrome.storage.sync.get("novels",(data)=>{
-            console.log(data);
             novels = data.novels
             if (novels[novel_name] == undefined){
                 characters = {}
+                replaces = {}
             }else{
-                characters = novels[novel_name]
-                console.log(characters);
+                characters = novels[novel_name]["characters"]
+                replaces = novels[novel_name]["replaces"]
             }
-
             replaceCharacters()
         })
     } catch (error) {
@@ -97,19 +97,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
     console.log("save novels recieved");
     console.log(message.characters)
     characters = message.characters
+    replaces = message.replaces
     replaceCharacters()
 })
 
 
 function replaceCharacters() {
 
-    // var replaceDict = [
-    //     ["خطوات تسلل الضباب","خطوات الضباب", "skill"]
-    // ];
-
     var tagsList = document.getElementsByTagName("p");
-    for (par of tagsList){
-        var innerHTML = par.innerHTML;
+    for (para of tagsList){
+        var innerHTML = para.innerHTML;
+
+
+        for (const key in replaces) {
+            if (Object.hasOwnProperty.call(replaces, key)) {
+                rep = replaces[key];
+                var index = innerHTML.indexOf(rep.name);
+                while (index >= 0){
+                    innerHTML = innerHTML.substring(0,index) + rep.with + innerHTML.substring(index + rep.name.length);
+                    index = innerHTML.indexOf(rep.name, index+=rep.with.length);
+                }
+                para.innerHTML = innerHTML;
+            }
+        }
+
+
+
 
         for (const key in characters) {
             if (Object.hasOwnProperty.call(characters, key)) {
@@ -117,9 +130,9 @@ function replaceCharacters() {
                 var index = innerHTML.indexOf(char.name);
                 while (index >= 0){
                     innerHTML = innerHTML.substring(0,index) + `<span class="tooltip1 `+ char.role +`">` + char.name + `<span class="tooltiptext1">`+ char.info +`</span></span>` + innerHTML.substring(index + char.name.length);
-                    index = innerHTML.indexOf(char.name, index+=30);
+                    index = innerHTML.indexOf(char.name, index+=(char.name.length+71));
                 }
-                par.innerHTML = innerHTML;
+                para.innerHTML = innerHTML;
             }
         }
 
