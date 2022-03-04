@@ -25,14 +25,19 @@ var delete_rep_btn = document.getElementById("delete_rep_btn");
 let novel_name = ""
 chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
     let novel_url = tabs[0].url.split("/");
-    let novel_url_name = novel_url[novel_url.length-2].split("-");
-    novel_url_name.pop()
-    novel_name = novel_url_name.join(" ")
+    if (novel_url[2] == "sunovels.com") {
+        novel_name = novel_url[4].replace("-", " ")
+    } else {
+        let novel_url_name = novel_url[novel_url.length-2].split("-");
+        novel_url_name.pop()
+        novel_name = novel_url_name.join(" ")
+    }
     console.log(novel_name);
 })
 
 var novels = {}
 var characters = {};
+var characters_sorted_list = [];
 var replaces = {};
 var char = {}
 
@@ -158,8 +163,8 @@ function deleteRep() {
 
 
 function saveCharacters() {
-    novels[novel_name]["characters"] = characters
-    novels[novel_name]["replaces"] = replaces
+    novels[novel_name]["characters"] = characters;
+    novels[novel_name]["replaces"] = replaces;
     chrome.storage.local.set({"novels":novels},()=>{
         chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
             var activeTab = tabs[0];
@@ -168,6 +173,14 @@ function saveCharacters() {
     })
     
 }
+
+function obj_toSorted_arr(_obj, _property) {
+    var list_obj = Object.keys(_obj).reduce(function (p, c) {
+        return p.concat(_obj[c]);
+      }, []);
+      list_obj.sort((a,b) => (a[_property] > b[_property]) ? -1 : ((b[_property] > a[_property]) ? 1 : 0));
+    return list_obj
+  }
 
 function loadChar(_currentRow, _name) {
     char = characters[_name];
@@ -203,12 +216,13 @@ function loadCharacters() {
 
             char_div.innerHTML = ""
             char_div.appendChild(createRow({"name":"الاسم", "role":"الدور"}, "header"))
-            for (const key in characters) {
-                if (Object.hasOwnProperty.call(characters, key)) {
-                    char = characters[key]
-                    char_div.appendChild(createRow(char))
-                }
-            }
+
+
+            characters_sorted_list = obj_toSorted_arr(characters, "role");
+            characters_sorted_list.forEach(char => {
+                char_div.appendChild(createRow(char))
+            });
+    
 
 
 
