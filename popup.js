@@ -1,44 +1,53 @@
 
 
 // =================== variables ===================
-var name_inp = document.getElementById("name_inp");
-var role_inp = document.getElementById("role_inp");
-var info_inp = document.getElementById("info_inp");
+var name_inp = document.getElementById('name_inp');
+var role_inp = document.getElementById('role_inp');
+var info_inp = document.getElementById('info_inp');
+var search_inp = document.getElementById('search_inp');
 
-var rep_name_inp = document.getElementById("rep_name_inp");
-var rep_with_inp = document.getElementById("rep_with_inp");
 
-var add_btn = document.getElementById("add_btn");
-var delete_btn = document.getElementById("delete_btn");
-var put_btn = document.getElementById("put_btn");
-var fetch_btn = document.getElementById("fetch_btn");
+var rep_name_inp = document.getElementById('rep_name_inp');
+var rep_with_inp = document.getElementById('rep_with_inp');
 
-var char_div = document.getElementById("char_div");
-var rep_char_div = document.getElementById("rep_char_div");
+var add_btn = document.getElementById('add_btn');
+var delete_btn = document.getElementById('delete_btn');
+var put_btn = document.getElementById('put_btn');
+var fetch_btn = document.getElementById('fetch_btn');
 
-var coloring_btn = document.getElementById("coloring_btn");
-var replacing_btn = document.getElementById("replacing_btn");
+var char_div = document.getElementById('char_div');
+var rep_char_div = document.getElementById('rep_char_div');
 
-var add_rep_btn = document.getElementById("add_rep_btn");
-var delete_rep_btn = document.getElementById("delete_rep_btn");
+var coloring_btn = document.getElementById('coloring_btn');
+var replacing_btn = document.getElementById('replacing_btn');
 
-let novel_name = ""
+var add_rep_btn = document.getElementById('add_rep_btn');
+var delete_rep_btn = document.getElementById('delete_rep_btn');
+var search_rep_inp = document.getElementById('search_rep_inp');
+
+var last_modified_p = document.getElementById('last_modified_p');
+
+let novel_name = ''
 chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-    let novel_url = tabs[0].url.split("/");
-    if (novel_url[2] == "sunovels.com") {
-        novel_name = novel_url[4].replace("-", " ")
+    let novel_url = tabs[0].url.split('/');
+    if (novel_url[2] == 'sunovels.com') {
+        novel_name = novel_url[4].replace('-', ' ')
     } else {
-        let novel_url_name = novel_url[novel_url.length-2].split("-");
+        let novel_url_name = novel_url[novel_url.length-2].split('-');
         novel_url_name.pop()
-        novel_name = novel_url_name.join(" ")
+        novel_name = novel_url_name.join(' ')
     }
     console.log(novel_name);
 })
 
+var date = new Date
 var novels = {}
 var characters = {};
-var characters_sorted_list = [];
 var replaces = {};
+settings = {
+    'last_modified':`${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+}
+var characters_sorted_list = [];
 var char = {}
 
 // listens to the click of the button into the popup content
@@ -46,6 +55,9 @@ add_btn.addEventListener('click', addChar)
 delete_btn.addEventListener('click', deleteChar)
 put_btn.addEventListener('click', putNovels)
 fetch_btn.addEventListener('click', fetchNovels)
+
+search_inp.addEventListener('keypress', searchChar)
+search_rep_inp.addEventListener('keypress', searchRepChar)
 
 coloring_btn.addEventListener('click', openColoring)
 replacing_btn.addEventListener('click', openReplacing)
@@ -57,26 +69,38 @@ loadCharacters()
 
 
 
-
 function putNovels(){
-    httpPut("https://jsonblob.com/api/941250293765783552");
-    alert("تم الحفظ")
+    if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
+        httpPut('https://jsonblob.com/api/941250293765783552');
+        alert('تم الحفظ')
+    }else{
+        console.log('put Declined')
+    }
 }
 
 function fetchNovels(){
-    novels = JSON.parse(httpGet("https://jsonblob.com/api/941250293765783552"));
+    if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
+        novels = JSON.parse(httpGet('https://jsonblob.com/api/941250293765783552'));
 
-    characters = novels[novel_name]["characters"]
-    replaces = novels[novel_name]["replaces"]
-
-    saveCharacters()
-    loadCharacters()
-    alert("تم التحديث")
+        console.log('Novels: ', novels);
+        if (novels !== undefined){
+            characters = novels[novel_name]['characters']
+            replaces = novels[novel_name]['replaces']
+            settings = novels[novel_name]['settings']
+        }
+        
+    
+        saveCharacters()
+        loadCharacters()
+        alert('تم التحديث')
+    } else {
+        console.log('Fetch Declined')
+    }
 }
 
 function httpGet(theUrl){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.open( 'GET', theUrl, false );
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.setRequestHeader('Accept', 'application/json');
     xmlHttp.send( null );
@@ -85,7 +109,7 @@ function httpGet(theUrl){
 
 function httpPut(theUrl){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("PUT", theUrl, true);
+    xmlHttp.open('PUT', theUrl, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.setRequestHeader('Accept', 'application/json');
     xmlHttp.send(JSON.stringify(novels));
@@ -103,32 +127,36 @@ function addChar() {
     char.name = name_inp.value;
     char.role = role_inp.value;
     char.info = info_inp.value;
+    char.timestamp = new Date().getTime();;
 
     switch (char.role) {
-        case "":
-            alert("يرجى ادخال الدور")
+        case '':
+            alert('يرجى ادخال الدور')
             return
-        case "بطل":
-            char.color = "#6e9bff";
+        case 'بطل':
+            char.color = '#6e9bff';
             break;
-        case "صديق":
-            char.color = "#55db3d";
+        case 'صديق':
+            char.color = '#55db3d';
             break;
-        case "عدو":
-            char.color = "#ff7878";
+        case 'عدو':
+            char.color = '#ff7878';
             break;
-        case "انثى":
-            char.color = "#ff6fd6";
+        case 'انثى':
+            char.color = '#ff6fd6';
             break;
-        case "مهارة":
-            char.color = "#ceab00";
+        case 'مهارة':
+            char.color = '#ceab00';
             break;
-        case "مدرب":
-            char.color = "#c3940f";
+        case 'مدرب':
+            char.color = '#c3940f';
+            break;
+        case 'طائفة':
+            char.color = '#c9a877';
             break;
         default:
-            char.color = char.role.split("   ")[1];
-            char.role = char.role.split("   ")[0];
+            char.color = char.role.split('   ')[1];
+            char.role = char.role.split('   ')[0];
             break;
     }
     
@@ -163,9 +191,11 @@ function deleteRep() {
 
 
 function saveCharacters() {
-    novels[novel_name]["characters"] = characters;
-    novels[novel_name]["replaces"] = replaces;
-    chrome.storage.local.set({"novels":novels},()=>{
+    novels[novel_name]['characters'] = characters;
+    novels[novel_name]['replaces'] = replaces;
+    settings['last_modified'] =  `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    novels[novel_name]['settings'] = settings;
+    chrome.storage.local.set({'novels':novels},()=>{
         chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
             var activeTab = tabs[0];
             chrome.tabs.sendMessage(activeTab.id, novels[novel_name]);
@@ -198,27 +228,72 @@ function loadRep(_currentRow, _name, _with) {
 }
 
 
+
+
+function searchChar(){
+    var searchCharacters = searchFor(characters ,search_inp.value)
+    console.log(searchCharacters, search_inp.value);
+
+    char_div.innerHTML = ''
+    char_div.appendChild(createRow({'name':'الاسم', 'role':'الدور'}, 'header'))
+
+
+    characters_sorted_list = obj_toSorted_arr(searchCharacters, 'role');
+    characters_sorted_list.forEach(char => {
+        char_div.appendChild(createRow(char))
+    });
+}
+
+function searchRepChar(){
+    var searchReplaces = searchFor(replaces ,search_rep_inp.value)
+    console.log(searchReplaces, search_rep_inp.value);
+
+    rep_char_div.innerHTML = ''
+    rep_char_div.appendChild(createRepRow({'name':'الاسم', 'with':'الاستبدال'}, 'header', {}))
+    for (const key in searchReplaces) {
+        if (Object.hasOwnProperty.call(searchReplaces, key)) {
+            rep = searchReplaces[key]
+            let char1 = characters[rep.with];
+            if (char1 == undefined){
+                char1={'color':'white', 'info':''};
+            }
+            rep_char_div.appendChild(createRepRow(rep, 'row', char1));
+
+        }
+    }
+}
+
+
+
+
 function loadCharacters() {
 
     try {
-        chrome.storage.local.get("novels",(data)=>{
+        chrome.storage.local.get('novels',(data)=>{
             console.log(data);
             novels = data.novels
             if (novels[novel_name] == undefined){
                 characters = {}
                 replaces = {}
+                settings = {
+                    'last_modified':`${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+                }
                 saveCharacters()
             }else{
-                characters = novels[novel_name]["characters"]
-                replaces = novels[novel_name]["replaces"]
-                console.log(characters, replaces);
+                characters = novels[novel_name]['characters']
+                replaces = novels[novel_name]['replaces']
+                settings = novels[novel_name]['settings']  
+                console.log(characters, replaces, settings);
             }
 
-            char_div.innerHTML = ""
-            char_div.appendChild(createRow({"name":"الاسم", "role":"الدور"}, "header"))
+            
+            last_modified_p.innerHTML = settings['last_modified']
+
+            char_div.innerHTML = ''
+            char_div.appendChild(createRow({'name':'الاسم', 'role':'الدور'}, 'header'))
 
 
-            characters_sorted_list = obj_toSorted_arr(characters, "role");
+            characters_sorted_list = obj_toSorted_arr(characters, 'role');
             characters_sorted_list.forEach(char => {
                 char_div.appendChild(createRow(char))
             });
@@ -226,16 +301,16 @@ function loadCharacters() {
 
 
 
-            rep_char_div.innerHTML = ""
-            rep_char_div.appendChild(createRepRow({"name":"الاسم", "with":"الاستبدال"}, "header", {}))
+            rep_char_div.innerHTML = ''
+            rep_char_div.appendChild(createRepRow({'name':'الاسم', 'with':'الاستبدال'}, 'header', {}))
             for (const key in replaces) {
                 if (Object.hasOwnProperty.call(replaces, key)) {
                     rep = replaces[key]
                     let char1 = characters[rep.with];
                     if (char1 == undefined){
-                        char1={"color":"white", "info":""};
+                        char1={'color':'white', 'info':''};
                     }
-                    rep_char_div.appendChild(createRepRow(rep, "row", char1));
+                    rep_char_div.appendChild(createRepRow(rep, 'row', char1));
 
                 }
             }
@@ -252,37 +327,45 @@ function loadCharacters() {
 
 
 
-function createRow(_columns, _type="row") {
+
+
+
+
+
+
+
+
+function createRow(_columns, _type='row') {
 
     var row_div = document.createElement('div')
-    if (_type=="row"){
-        row_div.className = "_chars_rows"
+    if (_type=='row'){
+        row_div.className = '_chars_rows'
     }else{
-        row_div.className = "_chars_header _chars_rows"
+        row_div.className = '_chars_header _chars_rows'
     }
     
 
     var name_p = document.createElement('p')
     name_p.appendChild(document.createTextNode(_columns.name))
     name_p.style['color'] = _columns.color
-    name_p.className = "_p"
+    name_p.className = '_p'
     row_div.appendChild(name_p)
 
     var role_p = document.createElement('p')
     role_p.appendChild(document.createTextNode(_columns.role))
     role_p.style['color'] = _columns.color
-    role_p.className = "_p"
+    role_p.className = '_p'
     row_div.appendChild(role_p)
 
     
     var info_span = document.createElement('span')
-    if (_columns.info==""){_columns.info="بدون وصف"}
+    if (_columns.info==''){_columns.info='بدون وصف'}
     info_span.appendChild(document.createTextNode(_columns.info))
-    info_span.className = "tooltiptext1"
+    info_span.className = 'tooltiptext1'
 
     var row_container = document.createElement('div')
-    row_container.className = "tooltip1"
-    if (_type=="row"){
+    row_container.className = 'tooltip1'
+    if (_type=='row'){
         row_container.appendChild(info_span)
         row_div.addEventListener('click', ()=>{loadChar(row_div, _columns.name)})
     }
@@ -293,38 +376,38 @@ function createRow(_columns, _type="row") {
 
 }
 
-function createRepRow(_columns, _type="row", _char) {
+function createRepRow(_columns, _type='row', _char) {
 
     var row_div = document.createElement('div')
-    if (_type=="row"){
-        row_div.className = "_chars_rows"
+    if (_type=='row'){
+        row_div.className = '_chars_rows'
     }else{
-        row_div.className = "_chars_header _chars_rows"
+        row_div.className = '_chars_header _chars_rows'
     }
     
 
     var name_p = document.createElement('p')
     name_p.appendChild(document.createTextNode(_columns.name))
     name_p.style['color'] = _char.color
-    name_p.className = "_p"
+    name_p.className = '_p'
     row_div.appendChild(name_p)
 
     var role_p = document.createElement('p')
     role_p.appendChild(document.createTextNode(_columns.with))
     role_p.style['color'] = _char.color
-    role_p.className = "_p"
+    role_p.className = '_p'
     row_div.appendChild(role_p)
 
 
 
     var info_span = document.createElement('span')
-    if (_char.info==""){_char.info="بدون وصف"}
+    if (_char.info==''){_char.info='بدون وصف'}
     info_span.appendChild(document.createTextNode(_char.info))
-    info_span.className = "tooltiptext1"
+    info_span.className = 'tooltiptext1'
 
     var row_container = document.createElement('div')
-    row_container.className = "tooltip1"
-    if (_type=="row"){
+    row_container.className = 'tooltip1'
+    if (_type=='row'){
         row_container.appendChild(info_span)
         row_div.addEventListener('click', ()=>{loadRep(row_div, _columns.name, _columns.with)})
     }
@@ -337,37 +420,61 @@ function createRepRow(_columns, _type="row", _char) {
 
 
 
-function openColoring(){openCity(coloring_btn, "coloring");}
-function openReplacing(){openCity(replacing_btn, "replacing");}
+function openColoring(){openCity(coloring_btn, 'coloring');}
+function openReplacing(){openCity(replacing_btn, 'replacing');}
 
 function openCity(currentBtn, cityName) {
     var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
+    tabcontent = document.getElementsByClassName('tabcontent');
     for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+        tabcontent[i].style.display = 'none';
     }
-    tablinks = document.getElementsByClassName("tablinks");
+    tablinks = document.getElementsByClassName('tablinks');
     for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].className = tablinks[i].className.replace(' active', '');
     }
-    document.getElementById(cityName).style.display = "block";
-    currentBtn.className += " active";
+    document.getElementById(cityName).style.display = 'block';
+    currentBtn.className += ' active';
 }
 
 
 
 function selectActiveRow(_currentRow) {
-    rows = document.getElementsByClassName("_chars_rows");
+    rows = document.getElementsByClassName('_chars_rows');
     for (i = 0; i < rows.length; i++) {
-        rows[i].className = rows[i].className.replace(" _active_row", "");
+        rows[i].className = rows[i].className.replace(' _active_row', '');
     }
-    _currentRow.className += " _active_row";
+    _currentRow.className += ' _active_row';
 }
 
 
 
 
 
+
+
+
+
+
+
+// =============================================================
+// ====================== Extra Funcitons ======================
+// =============================================================
+
+
+function searchFor(_characters, _text){
+    var results = []
+    for (const _char_key in _characters) {
+        if (Object.hasOwnProperty.call(_characters, _char_key)) {
+            if (JSON.stringify(_characters[_char_key]).indexOf(_text) > -1){
+                console.log(_characters[_char_key]);
+                results.push(_characters[_char_key])
+            }
+        }
+    }
+    return results
+}
+  
 
 
 

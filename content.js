@@ -57,6 +57,7 @@ head.innerHTML = head.innerHTML + `<style>
     .انثى{color: #ff6fd6;}
     .مهارة{color: #ceab00;}
     .مدرب{color: #c3940f;}
+    .طائفة{color: #c9a877;}
 </style>`
 
 let novel_url = document.URL.split("/");
@@ -114,35 +115,35 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
 
 function replaceCharacters() {
 
-    var tagsList = document.getElementsByTagName("p");
+    var tagsList = document.getElementsByClassName("epwrapper");
+    if (tagsList == undefined){
+        tagsList = document.getElementsByTagName("p");
+    }else{
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("strong", "p")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h5", "p")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h4", "p")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h3", "p")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h2", "p")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h1", "p")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;font-weight: bold;", " ")
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;", " ")
+    }
+    
+    
+    
     for (para of tagsList){
-        var innerHTML = para.innerHTML;
-
 
         for (const key in replaces) {
             if (Object.hasOwnProperty.call(replaces, key)) {
                 rep = replaces[key];
-                var index = innerHTML.indexOf(rep.name);
-                while (index >= 0){
-                    innerHTML = innerHTML.substring(0,index) + rep.with + innerHTML.substring(index + rep.name.length);
-                    index = innerHTML.indexOf(rep.name, index+=rep.with.length);
-                }
-                para.innerHTML = innerHTML;
+                para.innerHTML = para.innerHTML.replaceAll(rep.name, rep.with);
             }
         }
-
-
-
 
         for (const key in characters) {
             if (Object.hasOwnProperty.call(characters, key)) {
                 char = characters[key];
-                var index = innerHTML.indexOf(char.name);
-                while (index >= 0){
-                    innerHTML = innerHTML.substring(0,index) + `<span class="tooltip1 `+ char.role +`">` + char.name + `<span class="tooltiptext1">`+ char.info +`</span></span>` + innerHTML.substring(index + char.name.length);
-                    index = innerHTML.indexOf(char.name, index+=(char.name.length+71));
-                }
-                para.innerHTML = innerHTML;
+                para.innerHTML = para.innerHTML.replaceAll(char.name, `<span class="tooltip1 `+ char.role +`">` + char.name + `<span class="tooltiptext1">`+ char.info +`</span></span>`);
             }
         }
 

@@ -57,18 +57,22 @@ body{background-color: #222;}
   box-shadow: 0px 0px 5px 0px #ffffff47;
 }
 
+._search_inp{margin: 0px; width: 100%; text-align: center;}
+
 ._p{
     color: white;
     margin: 5px 0;
 }
 
+#last_modified_p{text-align: center;}
+
 ._char_div{
-    margin: 15px 0px;
+    margin: 0px;
     display: flex;
     flex-direction: column;
     overflow-y: hidden;
     cursor: pointer;
-    height: 223px;
+    height: 189px;
 }
 
 ._char_div:hover{
@@ -102,7 +106,6 @@ body{background-color: #222;}
     background-color: #2a2a2a;
     border-bottom: solid 1px white;
 }
-
 
 
 
