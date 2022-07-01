@@ -1,11 +1,11 @@
 {
 "manifest_version": 3,
 "name": "Kolnovels Characters Colors",
-"version": "8.0",
+"version": "9.0",
 "description": "Coloring novels' characters names",
 
 "content_scripts": [{
-    "matches": ["https://kolnovel.com/*/", "https://sunovels.com/novel/*/*/"],
+    "matches": ["https://kolnovel.com/*/", "https://sunovels.com/novel/*/*/", "file:///home/*"],
     "js": ["content.js"]
 }],
 

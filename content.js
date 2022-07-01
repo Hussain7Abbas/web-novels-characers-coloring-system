@@ -64,10 +64,12 @@ let novel_url = document.URL.split("/");
 let novel_name = "novel name"
 if (novel_url[2] == "sunovels.com") {
     novel_name = novel_url[4].replace("-", " ")
-} else {
+} else if (novel_url[2] == "kolnovel.com") {
     let novel_url_name = novel_url[novel_url.length-2].split("-");
     novel_url_name.pop()
     novel_name = novel_url_name.join(" ")
+} else if ((novel_url[0] == "file:")){
+    novel_name = novel_url[novel_url.length-3].replace("-", " ");
 }
 console.log(novel_name);
 
@@ -116,7 +118,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
 function replaceCharacters() {
 
     var tagsList = document.getElementsByClassName("epwrapper");
-    if (tagsList == undefined){
+    if (tagsList.length == 0){
         tagsList = document.getElementsByTagName("p");
     }else{
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("strong", "p")

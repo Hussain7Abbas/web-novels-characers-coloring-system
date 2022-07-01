@@ -1,6 +1,32 @@
+const sendBackup = (data) => {
+    var currentdate = new Date();
+    var datetime = currentdate.getDate() + "-"
+        + (currentdate.getMonth() + 1) + "-"
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + "-"
+        + currentdate.getMinutes() + "-"
+        + currentdate.getSeconds();
+    var chat_id = 547571285; // replace with yours
+    var enc_data = data;
+    var token = "5543097483:AAE7XUbXPQqwdu2CvbXDRKjRnn0_EJnJ6rw"; // from botfather
 
+    var blob = new Blob([enc_data], { type: 'plain/text' });
+
+    var formData = new FormData();
+    formData.append('chat_id', chat_id);
+    formData.append('document', blob, `kolnovels_backup ${datetime}.txt`);
+
+    var request = new XMLHttpRequest();
+    request.open('POST', `https://api.telegram.org/bot${token}/sendDocument`);
+    request.send(formData);
+
+}
 
 // =================== variables ===================
+
+let jsonBlobID = '992408217841844224'
+
+
 var name_inp = document.getElementById('name_inp');
 var role_inp = document.getElementById('role_inp');
 var info_inp = document.getElementById('info_inp');
@@ -28,14 +54,16 @@ var search_rep_inp = document.getElementById('search_rep_inp');
 var last_modified_p = document.getElementById('last_modified_p');
 
 let novel_name = ''
-chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let novel_url = tabs[0].url.split('/');
     if (novel_url[2] == 'sunovels.com') {
         novel_name = novel_url[4].replace('-', ' ')
-    } else {
-        let novel_url_name = novel_url[novel_url.length-2].split('-');
+    } else if (novel_url[2] == "kolnovel.com") {
+        let novel_url_name = novel_url[novel_url.length - 2].split("-");
         novel_url_name.pop()
-        novel_name = novel_url_name.join(' ')
+        novel_name = novel_url_name.join(" ")
+    } else if ((novel_url[0] == "file:")) {
+        novel_name = novel_url[novel_url.length - 3].replace("-", " ");
     }
     console.log(novel_name);
 })
@@ -45,10 +73,11 @@ var novels = {}
 var characters = {};
 var replaces = {};
 settings = {
-    'last_modified':`${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    'last_modified': `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 }
 var characters_sorted_list = [];
 var char = {}
+
 
 // listens to the click of the button into the popup content
 add_btn.addEventListener('click', addChar)
@@ -69,27 +98,30 @@ loadCharacters()
 
 
 
-function putNovels(){
-    if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
-        httpPut('https://jsonblob.com/api/941250293765783552');
+function putNovels() {
+    if (confirm('هل انت متاكد من عملية التصدير؟')) {
+        httpPut(`https://jsonblob.com/api/${jsonBlobID}`);
+        console.log('Noveeeeeeeels');
+        console.log(novels);
+        sendBackup(JSON.stringify(novels))
         alert('تم الحفظ')
-    }else{
+    } else {
         console.log('put Declined')
     }
 }
 
-function fetchNovels(){
+function fetchNovels() {
     if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
-        novels = JSON.parse(httpGet('https://jsonblob.com/api/941250293765783552'));
+        novels = JSON.parse(httpGet(`https://jsonblob.com/api/${jsonBlobID}`));
 
         console.log('Novels: ', novels);
-        if (novels !== undefined){
+        if (novels !== undefined) {
             characters = novels[novel_name]['characters']
             replaces = novels[novel_name]['replaces']
             settings = novels[novel_name]['settings']
         }
-        
-    
+
+
         saveCharacters()
         loadCharacters()
         alert('تم التحديث')
@@ -98,21 +130,22 @@ function fetchNovels(){
     }
 }
 
-function httpGet(theUrl){
+function httpGet(theUrl) {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( 'GET', theUrl, false );
+    xmlHttp.open('GET', theUrl, false);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.setRequestHeader('Accept', 'application/json');
-    xmlHttp.send( null );
+    xmlHttp.send(null);
     return xmlHttp.responseText;
 }
 
-function httpPut(theUrl){
+function httpPut(theUrl) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open('PUT', theUrl, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.setRequestHeader('Accept', 'application/json');
     xmlHttp.send(JSON.stringify(novels));
+
 }
 
 
@@ -159,7 +192,7 @@ function addChar() {
             char.role = char.role.split('   ')[0];
             break;
     }
-    
+
     console.log(char);
     characters[char.name] = char;
     saveCharacters();
@@ -193,24 +226,24 @@ function deleteRep() {
 function saveCharacters() {
     novels[novel_name]['characters'] = characters;
     novels[novel_name]['replaces'] = replaces;
-    settings['last_modified'] =  `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    settings['last_modified'] = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     novels[novel_name]['settings'] = settings;
-    chrome.storage.local.set({'novels':novels},()=>{
-        chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+    chrome.storage.local.set({ 'novels': novels }, () => {
+        chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
             chrome.tabs.sendMessage(activeTab.id, novels[novel_name]);
         });
     })
-    
+
 }
 
 function obj_toSorted_arr(_obj, _property) {
     var list_obj = Object.keys(_obj).reduce(function (p, c) {
         return p.concat(_obj[c]);
-      }, []);
-      list_obj.sort((a,b) => (a[_property] > b[_property]) ? -1 : ((b[_property] > a[_property]) ? 1 : 0));
+    }, []);
+    list_obj.sort((a, b) => (a[_property] > b[_property]) ? -1 : ((b[_property] > a[_property]) ? 1 : 0));
     return list_obj
-  }
+}
 
 function loadChar(_currentRow, _name) {
     char = characters[_name];
@@ -230,12 +263,12 @@ function loadRep(_currentRow, _name, _with) {
 
 
 
-function searchChar(){
-    var searchCharacters = searchFor(characters ,search_inp.value)
+function searchChar() {
+    var searchCharacters = searchFor(characters, search_inp.value)
     console.log(searchCharacters, search_inp.value);
 
     char_div.innerHTML = ''
-    char_div.appendChild(createRow({'name':'الاسم', 'role':'الدور'}, 'header'))
+    char_div.appendChild(createRow({ 'name': 'الاسم', 'role': 'الدور' }, 'header'))
 
 
     characters_sorted_list = obj_toSorted_arr(searchCharacters, 'role');
@@ -244,18 +277,18 @@ function searchChar(){
     });
 }
 
-function searchRepChar(){
-    var searchReplaces = searchFor(replaces ,search_rep_inp.value)
+function searchRepChar() {
+    var searchReplaces = searchFor(replaces, search_rep_inp.value)
     console.log(searchReplaces, search_rep_inp.value);
 
     rep_char_div.innerHTML = ''
-    rep_char_div.appendChild(createRepRow({'name':'الاسم', 'with':'الاستبدال'}, 'header', {}))
+    rep_char_div.appendChild(createRepRow({ 'name': 'الاسم', 'with': 'الاستبدال' }, 'header', {}))
     for (const key in searchReplaces) {
         if (Object.hasOwnProperty.call(searchReplaces, key)) {
             rep = searchReplaces[key]
             let char1 = characters[rep.with];
-            if (char1 == undefined){
-                char1={'color':'white', 'info':''};
+            if (char1 == undefined) {
+                char1 = { 'color': 'white', 'info': '' };
             }
             rep_char_div.appendChild(createRepRow(rep, 'row', char1));
 
@@ -269,46 +302,48 @@ function searchRepChar(){
 function loadCharacters() {
 
     try {
-        chrome.storage.local.get('novels',(data)=>{
+        chrome.storage.local.get('novels', (data) => {
+            console.log('name: ', novel_name);
             console.log(data);
             novels = data.novels
-            if (novels[novel_name] == undefined){
+            if (novels[novel_name] == undefined) {
+                novels[novel_name] = {}
                 characters = {}
                 replaces = {}
                 settings = {
-                    'last_modified':`${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+                    'last_modified': `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
                 }
                 saveCharacters()
-            }else{
+            } else {
                 characters = novels[novel_name]['characters']
                 replaces = novels[novel_name]['replaces']
-                settings = novels[novel_name]['settings']  
+                settings = novels[novel_name]['settings']
                 console.log(characters, replaces, settings);
             }
 
-            
+
             last_modified_p.innerHTML = settings['last_modified']
 
             char_div.innerHTML = ''
-            char_div.appendChild(createRow({'name':'الاسم', 'role':'الدور'}, 'header'))
+            char_div.appendChild(createRow({ 'name': 'الاسم', 'role': 'الدور' }, 'header'))
 
 
             characters_sorted_list = obj_toSorted_arr(characters, 'role');
             characters_sorted_list.forEach(char => {
                 char_div.appendChild(createRow(char))
             });
-    
+
 
 
 
             rep_char_div.innerHTML = ''
-            rep_char_div.appendChild(createRepRow({'name':'الاسم', 'with':'الاستبدال'}, 'header', {}))
+            rep_char_div.appendChild(createRepRow({ 'name': 'الاسم', 'with': 'الاستبدال' }, 'header', {}))
             for (const key in replaces) {
                 if (Object.hasOwnProperty.call(replaces, key)) {
                     rep = replaces[key]
                     let char1 = characters[rep.with];
-                    if (char1 == undefined){
-                        char1={'color':'white', 'info':''};
+                    if (char1 == undefined) {
+                        char1 = { 'color': 'white', 'info': '' };
                     }
                     rep_char_div.appendChild(createRepRow(rep, 'row', char1));
 
@@ -320,8 +355,8 @@ function loadCharacters() {
     } catch (error) {
         saveCharacters()
     }
-    
-    
+
+
 
 }
 
@@ -335,15 +370,15 @@ function loadCharacters() {
 
 
 
-function createRow(_columns, _type='row') {
+function createRow(_columns, _type = 'row') {
 
     var row_div = document.createElement('div')
-    if (_type=='row'){
+    if (_type == 'row') {
         row_div.className = '_chars_rows'
-    }else{
+    } else {
         row_div.className = '_chars_header _chars_rows'
     }
-    
+
 
     var name_p = document.createElement('p')
     name_p.appendChild(document.createTextNode(_columns.name))
@@ -357,17 +392,17 @@ function createRow(_columns, _type='row') {
     role_p.className = '_p'
     row_div.appendChild(role_p)
 
-    
+
     var info_span = document.createElement('span')
-    if (_columns.info==''){_columns.info='بدون وصف'}
+    if (_columns.info == '') { _columns.info = 'بدون وصف' }
     info_span.appendChild(document.createTextNode(_columns.info))
     info_span.className = 'tooltiptext1'
 
     var row_container = document.createElement('div')
     row_container.className = 'tooltip1'
-    if (_type=='row'){
+    if (_type == 'row') {
         row_container.appendChild(info_span)
-        row_div.addEventListener('click', ()=>{loadChar(row_div, _columns.name)})
+        row_div.addEventListener('click', () => { loadChar(row_div, _columns.name) })
     }
     row_container.appendChild(row_div)
 
@@ -376,15 +411,15 @@ function createRow(_columns, _type='row') {
 
 }
 
-function createRepRow(_columns, _type='row', _char) {
+function createRepRow(_columns, _type = 'row', _char) {
 
     var row_div = document.createElement('div')
-    if (_type=='row'){
+    if (_type == 'row') {
         row_div.className = '_chars_rows'
-    }else{
+    } else {
         row_div.className = '_chars_header _chars_rows'
     }
-    
+
 
     var name_p = document.createElement('p')
     name_p.appendChild(document.createTextNode(_columns.name))
@@ -401,15 +436,15 @@ function createRepRow(_columns, _type='row', _char) {
 
 
     var info_span = document.createElement('span')
-    if (_char.info==''){_char.info='بدون وصف'}
+    if (_char.info == '') { _char.info = 'بدون وصف' }
     info_span.appendChild(document.createTextNode(_char.info))
     info_span.className = 'tooltiptext1'
 
     var row_container = document.createElement('div')
     row_container.className = 'tooltip1'
-    if (_type=='row'){
+    if (_type == 'row') {
         row_container.appendChild(info_span)
-        row_div.addEventListener('click', ()=>{loadRep(row_div, _columns.name, _columns.with)})
+        row_div.addEventListener('click', () => { loadRep(row_div, _columns.name, _columns.with) })
     }
     row_container.appendChild(row_div)
 
@@ -420,8 +455,8 @@ function createRepRow(_columns, _type='row', _char) {
 
 
 
-function openColoring(){openCity(coloring_btn, 'coloring');}
-function openReplacing(){openCity(replacing_btn, 'replacing');}
+function openColoring() { openCity(coloring_btn, 'coloring'); }
+function openReplacing() { openCity(replacing_btn, 'replacing'); }
 
 function openCity(currentBtn, cityName) {
     var i, tabcontent, tablinks;
@@ -462,11 +497,11 @@ function selectActiveRow(_currentRow) {
 // =============================================================
 
 
-function searchFor(_characters, _text){
+function searchFor(_characters, _text) {
     var results = []
     for (const _char_key in _characters) {
         if (Object.hasOwnProperty.call(_characters, _char_key)) {
-            if (JSON.stringify(_characters[_char_key]).indexOf(_text) > -1){
+            if (JSON.stringify(_characters[_char_key]).indexOf(_text) > -1) {
                 console.log(_characters[_char_key]);
                 results.push(_characters[_char_key])
             }
@@ -474,7 +509,7 @@ function searchFor(_characters, _text){
     }
     return results
 }
-  
+
 
 
 
