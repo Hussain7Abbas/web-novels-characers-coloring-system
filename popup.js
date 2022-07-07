@@ -38,8 +38,6 @@ var rep_with_inp = document.getElementById('rep_with_inp');
 
 var add_btn = document.getElementById('add_btn');
 var delete_btn = document.getElementById('delete_btn');
-var put_btn = document.getElementById('put_btn');
-var fetch_btn = document.getElementById('fetch_btn');
 
 var char_div = document.getElementById('char_div');
 var rep_char_div = document.getElementById('rep_char_div');
@@ -82,8 +80,6 @@ var char = {}
 // listens to the click of the button into the popup content
 add_btn.addEventListener('click', addChar)
 delete_btn.addEventListener('click', deleteChar)
-put_btn.addEventListener('click', putNovels)
-fetch_btn.addEventListener('click', fetchNovels)
 
 search_inp.addEventListener('keypress', searchChar)
 search_rep_inp.addEventListener('keypress', searchRepChar)
@@ -94,40 +90,30 @@ replacing_btn.addEventListener('click', openReplacing)
 add_rep_btn.addEventListener('click', addRep)
 delete_rep_btn.addEventListener('click', deleteRep)
 
-loadCharacters()
 
+fetchNovels()
 
 
 function putNovels() {
-    if (confirm('هل انت متاكد من عملية التصدير؟')) {
-        httpPut(`https://jsonblob.com/api/${jsonBlobID}`);
-        console.log('Noveeeeeeeels');
-        console.log(novels);
-        sendBackup(JSON.stringify(novels))
-        alert('تم الحفظ')
-    } else {
-        console.log('put Declined')
-    }
+    httpPut(`https://jsonblob.com/api/${jsonBlobID}`);
+    console.log('Noveeeeeeeels');
+    console.log(novels);
+    sendBackup(JSON.stringify(novels))
 }
 
 function fetchNovels() {
-    if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
-        novels = JSON.parse(httpGet(`https://jsonblob.com/api/${jsonBlobID}`));
+    novels = JSON.parse(httpGet(`https://jsonblob.com/api/${jsonBlobID}`));
 
-        console.log('Novels: ', novels);
-        if (novels !== undefined) {
-            characters = novels[novel_name]['characters']
-            replaces = novels[novel_name]['replaces']
-            settings = novels[novel_name]['settings']
-        }
-
-
-        saveCharacters()
-        loadCharacters()
-        alert('تم التحديث')
-    } else {
-        console.log('Fetch Declined')
+    console.log('Novels: ', novels);
+    if (novels !== undefined) {
+        characters = novels[novel_name]['characters']
+        replaces = novels[novel_name]['replaces']
+        settings = novels[novel_name]['settings']
     }
+
+
+    saveCharacters()
+    loadCharacters()
 }
 
 function httpGet(theUrl) {
@@ -196,13 +182,15 @@ function addChar() {
     console.log(char);
     characters[char.name] = char;
     saveCharacters();
-    loadCharacters()
+    putNovels();
+    loadCharacters();
 }
 
 function deleteChar() {
     delete characters[name_inp.value]
     saveCharacters();
-    loadCharacters()
+    putNovels();
+    loadCharacters();
 }
 
 
@@ -213,28 +201,46 @@ function addRep() {
     console.log(rep);
     replaces[rep.name] = rep;
     saveCharacters();
-    loadCharacters()
+    putNovels();
+    loadCharacters();
 }
 
 function deleteRep() {
     delete replaces[rep_name_inp.value]
     saveCharacters();
-    loadCharacters()
+    loadCharacters();
+    putNovels()
 }
 
 
 function saveCharacters() {
+
     novels[novel_name]['characters'] = characters;
     novels[novel_name]['replaces'] = replaces;
     settings['last_modified'] = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     novels[novel_name]['settings'] = settings;
+
+    // TODO add to all novels an 'img' attribute
+    for (const novel in novels) {
+        if (Object.hasOwnProperty.call(novels, novel)) {
+            let chars = novels[novel];
+            for (const key in chars) {
+                if (Object.hasOwnProperty.call(chars, key)) {
+                    let element = chars[key];
+                    element['img']='';
+                }
+            }
+
+        }
+    }
+
+
     chrome.storage.local.set({ 'novels': novels }, () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
             chrome.tabs.sendMessage(activeTab.id, novels[novel_name]);
         });
     })
-
 }
 
 function obj_toSorted_arr(_obj, _property) {
@@ -352,6 +358,7 @@ function loadCharacters() {
 
 
         })
+
     } catch (error) {
         saveCharacters()
     }
