@@ -128,11 +128,21 @@ body{background-color: #222;}
 
     /* Position the tooltip */
     position: absolute;
-    z-index: 1;
+    z-index: 9999;
     bottom: 100%;
     left: 50%;
     margin-left: -60px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+
+.tooltiptext1 img{
+  width: 5rem;
+}
+
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip1:hover .tooltiptext1 {

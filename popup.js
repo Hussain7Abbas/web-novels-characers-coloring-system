@@ -30,6 +30,7 @@ let jsonBlobID = '992408217841844224'
 var name_inp = document.getElementById('name_inp');
 var role_inp = document.getElementById('role_inp');
 var info_inp = document.getElementById('info_inp');
+var img_inp = document.getElementById('img_inp');
 var search_inp = document.getElementById('search_inp');
 
 
@@ -146,6 +147,7 @@ function addChar() {
     char.name = name_inp.value;
     char.role = role_inp.value;
     char.info = info_inp.value;
+    char.img = img_inp.value;
     char.timestamp = new Date().getTime();;
 
     switch (char.role) {
@@ -220,21 +222,6 @@ function saveCharacters() {
     settings['last_modified'] = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     novels[novel_name]['settings'] = settings;
 
-    // TODO add to all novels an 'img' attribute
-    for (const novel in novels) {
-        if (Object.hasOwnProperty.call(novels, novel)) {
-            let chars = novels[novel];
-            for (const key in chars) {
-                if (Object.hasOwnProperty.call(chars, key)) {
-                    let element = chars[key];
-                    element['img']='';
-                }
-            }
-
-        }
-    }
-
-
     chrome.storage.local.set({ 'novels': novels }, () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
@@ -256,6 +243,7 @@ function loadChar(_currentRow, _name) {
     name_inp.value = char.name;
     role_inp.value = char.role;
     info_inp.value = char.info;
+    img_inp.value = char.img;
 
     selectActiveRow(_currentRow);
 }
@@ -377,7 +365,7 @@ function loadCharacters() {
 
 
 
-function createRow(_columns, _type = 'row') {
+function createRow(_char, _type = 'row') {
 
     var row_div = document.createElement('div')
     if (_type == 'row') {
@@ -388,28 +376,34 @@ function createRow(_columns, _type = 'row') {
 
 
     var name_p = document.createElement('p')
-    name_p.appendChild(document.createTextNode(_columns.name))
-    name_p.style['color'] = _columns.color
+    name_p.appendChild(document.createTextNode(_char.name))
+    name_p.style['color'] = _char.color
     name_p.className = '_p'
     row_div.appendChild(name_p)
 
     var role_p = document.createElement('p')
-    role_p.appendChild(document.createTextNode(_columns.role))
-    role_p.style['color'] = _columns.color
+    role_p.appendChild(document.createTextNode(_char.role))
+    role_p.style['color'] = _char.color
     role_p.className = '_p'
     row_div.appendChild(role_p)
 
 
     var info_span = document.createElement('span')
-    if (_columns.info == '') { _columns.info = 'بدون وصف' }
-    info_span.appendChild(document.createTextNode(_columns.info))
-    info_span.className = 'tooltiptext1'
+    if (_char.info == '') { _char.info = 'بدون وصف' }
+    if (_char.img == '') { _char.img = 'https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg' }
 
     var row_container = document.createElement('div')
     row_container.className = 'tooltip1'
     if (_type == 'row') {
+        var img = document.createElement('img');
+        img.src = _char.img;
+        info_span.appendChild(img);
+
+        info_span.appendChild(document.createTextNode(_char.info))
+        info_span.className = 'tooltiptext1'
+        
         row_container.appendChild(info_span)
-        row_div.addEventListener('click', () => { loadChar(row_div, _columns.name) })
+        row_div.addEventListener('click', () => { loadChar(row_div, _char.name) })
     }
     row_container.appendChild(row_div)
 
@@ -449,10 +443,12 @@ function createRepRow(_columns, _type = 'row', _char) {
 
     var row_container = document.createElement('div')
     row_container.className = 'tooltip1'
+
     if (_type == 'row') {
         row_container.appendChild(info_span)
         row_div.addEventListener('click', () => { loadRep(row_div, _columns.name, _columns.with) })
     }
+
     row_container.appendChild(row_div)
 
 

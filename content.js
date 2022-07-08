@@ -145,15 +145,12 @@ function replaceCharacters() {
         for (const key in characters) {
             if (Object.hasOwnProperty.call(characters, key)) {
                 char = characters[key];
-                // para.innerHTML = para.innerHTML.replaceAll(char.name, `<span class="tooltip1 ${char.role}">
-                // ${char.name}<span class="tooltiptext1">
-                // ${char.info}<span class="tooltiptext1">
-                // <object data="https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg" type="image/png">
-                //     <img src="${char.img}"/>
-                // </object>
-                // </span>
-                // </span>
-                // </span>`);
+                para.innerHTML = para.innerHTML.replaceAll(char.name, `<span class="tooltip1 ${char.role}">
+                ${char.name}<span class="tooltiptext1">
+                <img src="${char.img}"/>
+                ${char.info}
+                </span>
+                </span>`);
             }
         }
 
