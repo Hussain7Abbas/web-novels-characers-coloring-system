@@ -69,7 +69,7 @@ if (novel_url[2] == "sunovels.com") {
     novel_url_name.pop()
     novel_name = novel_url_name.join(" ")
 } else if ((novel_url[0] == "file:")){
-    novel_name = novel_url[novel_url.length-3].replace("-", " ");
+    novel_name = novel_url[novel_url.length-2].replace("-", " ");
 }
 console.log(novel_name);
 
