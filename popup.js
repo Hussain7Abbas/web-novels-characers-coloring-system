@@ -64,6 +64,9 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         let novel_url_name = novel_url[novel_url.length - 2].split("-");
         novel_url_name.pop();
         novel_name = novel_url_name.join(" ");
+    } else if (novel_url[2] == "rewayat.club") {
+        let novel_url_name = novel_url[4].split("-");
+        novel_name = novel_url_name.join(" ");
     } else if ((novel_url[0] == "file:")) {
         novel_name = novel_url[novel_url.length - 2].replace("-", " ");
     }

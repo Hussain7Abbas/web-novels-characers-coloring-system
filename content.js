@@ -3,7 +3,7 @@
 // =======================================================================
 
 
-let head = document.getElementsByTagName("head")[0]
+let head = document.getElementsByTagName("head")[0];
 
 head.innerHTML = head.innerHTML + `<style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic&display=swap');
@@ -58,82 +58,86 @@ head.innerHTML = head.innerHTML + `<style>
     .مهارة{color: #ceab00;}
     .مدرب{color: #c3940f;}
     .طائفة{color: #c9a877;}
-</style>`
+</style>`;
 
 let novel_url = document.URL.split("/");
-let novel_name = "novel name"
+let novel_name = "novel name";
 if (novel_url[2] == "sunovels.com") {
-    novel_name = novel_url[4].replace("-", " ")
+    novel_name = novel_url[4].replace("-", " ");
 } else if (novel_url[2] == "kolnovel.com") {
-    let novel_url_name = novel_url[novel_url.length-2].split("-");
-    novel_url_name.pop()
-    novel_name = novel_url_name.join(" ")
-} else if ((novel_url[0] == "file:")){
-    novel_name = novel_url[novel_url.length-2].replace("-", " ");
+    let novel_url_name = novel_url[novel_url.length - 2].split("-");
+    novel_url_name.pop();
+    novel_name = novel_url_name.join(" ");
+} else if (novel_url[2] == "rewayat.club") {
+    let novel_url_name = novel_url[4].split("-");
+    novel_name = novel_url_name.join(" ");
+} else if ((novel_url[0] == "file:")) {
+    novel_name = novel_url[novel_url.length - 2].replace("-", " ");
 }
 console.log(novel_name);
 
 
-let novels = {}
-let characters = {}
-let replaces = {}
+let novels = {};
+let characters = {};
+let replaces = {};
 
 
-loadCharacters()
+loadCharacters();
 
 
 
 function loadCharacters() {
 
     try {
-        chrome.storage.local.get("novels",(data)=>{
-            novels = data.novels
-            if (novels[novel_name] == undefined){
-                characters = {}
-                replaces = {}
-            }else{
-                characters = novels[novel_name]["characters"]
-                replaces = novels[novel_name]["replaces"]
+        chrome.storage.local.get("novels", (data) => {
+            novels = data.novels;
+            if (novels[novel_name] == undefined) {
+                characters = {};
+                replaces = {};
+            } else {
+                characters = novels[novel_name]["characters"];
+                replaces = novels[novel_name]["replaces"];
             }
-            replaceCharacters()
-        })
+            replaceCharacters();
+        });
     } catch (error) {
-        
+
     }
-    
-    
+
+
 
 }
 
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("save novels recieved");
-    console.log(message.characters)
-    characters = message.characters
-    replaces = message.replaces
-    replaceCharacters()
-})
+    console.log(message.characters);
+    characters = message.characters;
+    replaces = message.replaces;
+    replaceCharacters();
+});
 
 
 function replaceCharacters() {
 
+
     var tagsList = document.getElementsByClassName("epwrapper");
-    if (tagsList.length == 0){
+    if (tagsList.length == 0) {
         tagsList = document.getElementsByTagName("p");
-    }else{
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("strong", "p")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h5", "p")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h4", "p")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h3", "p")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h2", "p")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h1", "p")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;font-weight: bold;", " ")
-        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;", " ")
+    } else {
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("strong", "p");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h5", "p");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h4", "p");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h3", "p");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h2", "p");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h1", "p");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;font-weight: bold;", " ");
+        tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;", " ");
     }
-    
-    
-    
-    for (para of tagsList){
+
+
+
+    for (para of tagsList) {
 
         for (const key in replaces) {
             if (Object.hasOwnProperty.call(replaces, key)) {
