@@ -8,6 +8,9 @@ let head = document.getElementsByTagName("head")[0];
 head.innerHTML = head.innerHTML + `<style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic&display=swap');
 
+#kol_content{
+   overflow: initial !important;
+}
 /* Tooltip container */
 .tooltip1 {
     position: relative;
@@ -29,8 +32,10 @@ head.innerHTML = head.innerHTML + `<style>
     position: absolute;
     z-index: 1;
     bottom: 100%;
-    left: 50%;
     margin-left: -60px;
+    left: 50%;
+    width:16vw;
+    transform: translateX(-2vw);
   }
   
   /* Show the tooltip text when you mouse over the tooltip container */
@@ -50,7 +55,8 @@ head.innerHTML = head.innerHTML + `<style>
   }
 
   .chapter-content p{display: block !important; font-family: 'Noto Kufi Arabic', sans-serif;}
-
+  section.content-wrap .chapter-content p:nth-child(odd) { display: none !important; } /* for sunnovels */
+.publift-widget-22804772995{display:none!important;}
     .بطل{color: #6e9bff;}
     .صديق{color: #55db3d;}
     .عدو{color: #ff7878;}
@@ -68,14 +74,15 @@ if (novel_url[2] == "sunovels.com") {
     let novel_url_name = novel_url[novel_url.length - 2].split("-");
     novel_url_name.pop();
     novel_name = novel_url_name.join(" ");
+} else if (novel_url[2] == "riwyat.com") {
+    novel_name = novel_url[novel_url.length - 3].replace("-", " ");
 } else if (novel_url[2] == "rewayat.club") {
     let novel_url_name = novel_url[4].split("-");
     novel_name = novel_url_name.join(" ");
 } else if ((novel_url[0] == "file:")) {
     novel_name = novel_url[novel_url.length - 2].replace("-", " ");
 }
-console.log(novel_name);
-
+console.log('Kolnovels Extention✅', novel_name);
 
 let novels = {};
 let characters = {};
@@ -123,8 +130,10 @@ function replaceCharacters() {
 
     var tagsList = document.getElementsByClassName("epwrapper");
     if (tagsList.length == 0) {
+        console.log('✅', 'not kolnovels');
         tagsList = document.getElementsByTagName("p");
     } else {
+        console.log('✅', 'it\'s kolnovels');
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("strong", "p");
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h5", "p");
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h4", "p");

@@ -6,11 +6,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://kolnovel.com/*/",
-                "https://sunovels.com/novel/*/*",
-                "https://rewayat.club/*",
-                "https://riwyat.com/novel/*/*/",
-                "file:///home/*"
+                "<all_urls>"
             ],
             "js": [
                 "content.js"

@@ -24,8 +24,7 @@ const sendBackup = (data) => {
 
 // =================== variables ===================
 
-let jsonBlobID = '1017067320937562112';
-
+let jsonBlobID = '1058671416035262464';
 
 var name_inp = document.getElementById('name_inp');
 var role_inp = document.getElementById('role_inp');
@@ -64,6 +63,8 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         let novel_url_name = novel_url[novel_url.length - 2].split("-");
         novel_url_name.pop();
         novel_name = novel_url_name.join(" ");
+    } else if (novel_url[2] == "riwyat.com") {
+        novel_name = novel_url[novel_url.length - 3].replace("-", " ");
     } else if (novel_url[2] == "rewayat.club") {
         let novel_url_name = novel_url[4].split("-");
         novel_name = novel_url_name.join(" ");
