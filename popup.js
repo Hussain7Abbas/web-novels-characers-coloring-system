@@ -24,7 +24,7 @@ const sendBackup = (data) => {
 
 // =================== variables ===================
 
-let jsonBlobID = '1058671416035262464';
+let jsonBinID = '642d6813ebd26539d0a4ffb8';
 
 var name_inp = document.getElementById('name_inp');
 var role_inp = document.getElementById('role_inp');
@@ -68,6 +68,9 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     } else if (novel_url[2] == "rewayat.club") {
         let novel_url_name = novel_url[4].split("-");
         novel_name = novel_url_name.join(" ");
+    } else if (novel_url[2] == "mtlnovel.club") {
+        let novel_url_name = novel_url[3].split("-");
+        novel_name = novel_url_name.join(" ");
     } else if ((novel_url[0] == "file:")) {
         novel_name = novel_url[novel_url.length - 2].replace("-", " ");
     }
@@ -107,7 +110,7 @@ loadCharacters();
 
 function putNovels() {
     if (confirm('هل انت متاكد من عملية التصدير؟')) {
-        httpPut(`https://jsonblob.com/api/${jsonBlobID}`);
+        httpPut(`https://api.jsonbin.io/v3/b/${jsonBinID}`);
         console.log('Noveeeeeeeels');
         console.log(novels);
         sendBackup(JSON.stringify(novels));
@@ -119,14 +122,15 @@ function putNovels() {
 
 function fetchNovels() {
     if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
-        novels = JSON.parse(httpGet(`https://jsonblob.com/api/${jsonBlobID}`));
+        novels = JSON.parse(httpGet(`https://api.jsonbin.io/v3/b/${jsonBinID}/latest`))['record'];
 
         console.log('Novels: ', novels);
-        if (novels !== undefined) {
-            characters = novels[novel_name]['characters'];
-            replaces = novels[novel_name]['replaces'];
-            settings = novels[novel_name]['settings'];
-        }
+        novels = novels || {}; // if novels is undefined, set it to an empty object
+        novels[novel_name] = novelsp[novel_name] || {
+            'characters': novels[novel_name]['characters'] || {},
+            'replaces': novels[novel_name]['replaces'] || {},
+            'settings': novels[novel_name]['settings'] || {}
+        };
 
         saveCharacters();
         loadCharacters();
@@ -138,16 +142,17 @@ function httpGet(theUrl) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open('GET', theUrl, false);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.setRequestHeader('Accept', 'application/json');
+    xmlHttp.setRequestHeader("X-Master-Key", "$2b$10$477kB.r3XjCmssAJaM728ugWcpE8mXfMdZbwJJPYlT1v7nWrfA1d.");
     xmlHttp.send(null);
     return xmlHttp.responseText;
 }
 
 function httpPut(theUrl) {
+
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open('PUT', theUrl, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.setRequestHeader('Accept', 'application/json');
+    xmlHttp.setRequestHeader("X-Master-Key", "$2b$10$477kB.r3XjCmssAJaM728ugWcpE8mXfMdZbwJJPYlT1v7nWrfA1d.");
     xmlHttp.send(JSON.stringify(novels));
 
 }
@@ -229,11 +234,15 @@ function deleteRep() {
 
 
 function saveCharacters() {
-
-    novels[novel_name]['characters'] = characters;
-    novels[novel_name]['replaces'] = replaces;
-    settings['last_modified'] = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-    novels[novel_name]['settings'] = settings;
+    // create the novel if it doesn't exist
+    console.log('✅novel_name', novel_name);
+    console.log('✅novels', novels);
+    novels = novels || {};  // if novels is undefined, set it to an empty object
+    novels[novel_name] = novels[novel_name] || { // if the novel doesn't exist, create it
+        'characters': characters || {},
+        'replaces': replaces || {},
+        'settings': { 'last_modified': `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` }
+    };
 
     chrome.storage.local.set({ 'novels': novels }, () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
@@ -311,22 +320,22 @@ function loadCharacters() {
     try {
         chrome.storage.local.get('novels', (data) => {
             console.log('name: ', novel_name);
-            console.log(data);
-            novels = data.novels;
-            if (novels[novel_name] == undefined) {
-                novels[novel_name] = {};
-                characters = {};
-                replaces = {};
-                settings = {
-                    'last_modified': `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-                };
-                saveCharacters();
-            } else {
+            console.log('local storage data', data);
+            novels = data.novels || {}; // if novels is undefined, set it to an empty object
+            if (novels[novel_name]) {
                 characters = novels[novel_name]['characters'];
                 replaces = novels[novel_name]['replaces'];
                 settings = novels[novel_name]['settings'];
-                console.log(characters, replaces, settings);
+            } else {
+                characters = {};
+                replaces = {};
+                settings = { 'last_modified': `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` };
+                saveCharacters();
             }
+
+
+            console.log(characters, replaces, settings);
+
 
 
             last_modified_p.innerHTML = settings['last_modified'];
@@ -403,13 +412,15 @@ function createRow(_char, _type = 'row') {
 
     var info_span = document.createElement('span');
     if (_char.info == '') { _char.info = 'بدون وصف'; }
-    if (_char.img == '') { _char.img = 'https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg'; }
 
     var row_container = document.createElement('div');
     row_container.className = 'tooltip1';
     if (_type == 'row') {
         var img = document.createElement('img');
         img.src = _char.img;
+        img.onerror = function () {
+            this.src = 'https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg';
+        };
         info_span.appendChild(img);
 
         info_span.appendChild(document.createTextNode(_char.info));
