@@ -100,12 +100,11 @@ function loadCharacters() {
 
     try {
         chrome.storage.local.get("novels", (data) => {
-            novels = data.novels;
-            console.log('✅local storage novels', novels);
-            novels[novel_name] = {
-                "characters": novels[novel_name]["characters"] || {},
-                "replaces": novels[novel_name]["replaces"] || {}
-            };
+            novels = data?.novels || {}; // if novels not exist create it
+            console.log('✅local storage novels', data);
+            novels[novel_name] = novels[novel_name] || {}; // if a novel not exist create it
+            characters = novels[novel_name]['characters'] || {};
+            replaces = novels[novel_name]['replaces'] || {};
 
             replaceCharacters();
         });
