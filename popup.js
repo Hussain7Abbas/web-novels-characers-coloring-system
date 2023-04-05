@@ -68,7 +68,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     } else if (novel_url[2] == "rewayat.club") {
         let novel_url_name = novel_url[4].split("-");
         novel_name = novel_url_name.join(" ");
-    } else if (novel_url[2] == "mtlnovel.club") {
+    } else if (novel_url[2] == "www.mtlnovel.com") {
         let novel_url_name = novel_url[3].split("-");
         novel_name = novel_url_name.join(" ");
     } else if ((novel_url[0] == "file:")) {
