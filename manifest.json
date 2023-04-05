@@ -10,7 +10,8 @@
                 "https://sunovels.com/novel/*/*",
                 "https://rewayat.club/*",
                 "https://riwyat.com/novel/*/*/",
-                "file:///home/*"
+                "file:///home/*",
+                "https://mtlnovel.com/*/*/"
             ],
             "js": [
                 "content.js"

@@ -79,6 +79,9 @@ if (novel_url[2] == "sunovels.com") {
 } else if (novel_url[2] == "rewayat.club") {
     let novel_url_name = novel_url[4].split("-");
     novel_name = novel_url_name.join(" ");
+} else if (novel_url[2] == "mtlnovel.club") {
+    let novel_url_name = novel_url[3].split("-");
+    novel_name = novel_url_name.join(" ");
 } else if ((novel_url[0] == "file:")) {
     novel_name = novel_url[novel_url.length - 2].replace("-", " ");
 }
@@ -98,13 +101,12 @@ function loadCharacters() {
     try {
         chrome.storage.local.get("novels", (data) => {
             novels = data.novels;
-            if (novels[novel_name] == undefined) {
-                characters = {};
-                replaces = {};
-            } else {
-                characters = novels[novel_name]["characters"];
-                replaces = novels[novel_name]["replaces"];
-            }
+            console.log('✅local storage novels', novels);
+            novels[novel_name] = {
+                "characters": novels[novel_name]["characters"] || {},
+                "replaces": novels[novel_name]["replaces"] || {}
+            };
+
             replaceCharacters();
         });
     } catch (error) {
@@ -160,7 +162,7 @@ function replaceCharacters() {
                 char = characters[key];
                 para.innerHTML = para.innerHTML.replaceAll(char.name, `<span class="tooltip1 ${char.role}">
                 ${char.name}<span class="tooltiptext1">
-                <img src="${char.img}"/>
+                <img src="${char.img}" onerror="this.onerror=null;this.src='https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg'"/>
                 ${char.info}
                 </span>
                 </span>`);

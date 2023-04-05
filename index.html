@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html dir="rtl">
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -7,22 +8,23 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="icon" type="image/x-icon" href="/assets/icon.png">
     <link rel='stylesheet' type='text/css' media='screen' href='popup.css'>
-    <link rel="stylesheet" href="./lib/simplebar/macOS_Scrollbar.css"/>
+    <link rel="stylesheet" href="./lib/simplebar/macOS_Scrollbar.css" />
 </head>
+
 <body>
 
     <div class="tab">
         <button class="tablinks active" id="coloring_btn">تلوين</button>
         <button class="tablinks" id="replacing_btn">استبدال</button>
     </div>
-    
+
     <div id="coloring" class="tabcontent" style="display: block;">
         <div class="_div">
             <div class="_input_div">
                 <label>الاسم: </label>
                 <input id="name_inp" class="_input" type="text">
             </div>
-    
+
             <div class="_input_div">
                 <label>الدور: </label>
                 <input id="role_inp" class="_input" list="roles">
@@ -34,9 +36,9 @@
                     <option value="مهارة">
                     <option value="مدرب">
                     <option value="طائفة">
-                  </datalist>
+                </datalist>
             </div>
-    
+
             <div class="_input_div">
                 <label>وصف: </label>
                 <input id="info_inp" class="_input" type="text">
@@ -45,7 +47,7 @@
                 <label>الصورة: </label>
                 <input id="img_inp" class="_input" type="text">
             </div>
-            
+
             <div class="_btn_div">
                 <button id="add_btn" class="_button" style="background-color: green;">اضافة شخصية</button>
                 <button id="delete_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف شخصية</button>
@@ -61,21 +63,22 @@
             <div id="char_div" class="_char_div"></div>
         </div>
     </div>
-    
+
     <div id="replacing" class="tabcontent">
         <div class="_div">
             <div class="_input_div">
                 <label>الاسم: </label>
                 <input id="rep_name_inp" class="_input" type="text">
             </div>
-    
+
             <div class="_input_div">
                 <label>استبدال بـ: </label>
                 <input id="rep_with_inp" class="_input" type="text">
             </div>
             <div class="_btn_div">
                 <button id="add_rep_btn" class="_button" style="background-color: green;">اضافة شخصية</button>
-                <button id="delete_rep_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف شخصية</button>
+                <button id="delete_rep_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف
+                    شخصية</button>
             </div>
             <div class="_input_div">
                 <input id="search_rep_inp" class="_input _search_inp" type="text" placeholder="نص البحث">
@@ -95,4 +98,5 @@
 
     <script src='popup.js' type='text/javascript'></script>
 </body>
+
 </html>
