@@ -1,30 +1,5 @@
-const sendBackup = (data) => {
-    var currentdate = new Date();
-    var datetime = currentdate.getDate() + "-"
-        + (currentdate.getMonth() + 1) + "-"
-        + currentdate.getFullYear() + " @ "
-        + currentdate.getHours() + "-"
-        + currentdate.getMinutes() + "-"
-        + currentdate.getSeconds();
-    var chat_id = 547571285; // replace with yours
-    var enc_data = data;
-    var token = "5543097483:AAE7XUbXPQqwdu2CvbXDRKjRnn0_EJnJ6rw"; // from botfather
 
-    var blob = new Blob([enc_data], { type: 'plain/text' });
-
-    var formData = new FormData();
-    formData.append('chat_id', chat_id);
-    formData.append('document', blob, `kolnovels_backup ${datetime}.txt`);
-
-    var request = new XMLHttpRequest();
-    request.open('POST', `https://api.telegram.org/bot${token}/sendDocument`);
-    request.send(formData);
-
-};
-
-// =================== variables ===================
-
-let jsonBinID = '642d6813ebd26539d0a4ffb8';
+let jsonBlobId = '1157229262708531200';
 
 var name_inp = document.getElementById('name_inp');
 var role_inp = document.getElementById('role_inp');
@@ -108,53 +83,48 @@ loadCharacters();
 
 
 
-function putNovels() {
+async function putNovels() {
     if (confirm('هل انت متاكد من عملية التصدير؟')) {
-        httpPut(`https://api.jsonbin.io/v3/b/${jsonBinID}`);
-        console.log('Noveeeeeeeels');
-        console.log(novels);
-        sendBackup(JSON.stringify(novels));
-        alert('تم الحفظ');
+        await httpReq(`https://jsonblob.com/api/jsonBlob/${jsonBlobId}`, "PUT", JSON.stringify(novels));
+        sendTelegramBackup(JSON.stringify(novels));
     } else {
         console.log('put Declined');
     }
 }
 
-function fetchNovels() {
+async function fetchNovels() {
     if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
-        novels = JSON.parse(httpGet(`https://api.jsonbin.io/v3/b/${jsonBinID}/latest`))['record'];
-
-        console.log('Novels: ', novels);
+        novels = await httpReq(`https://jsonblob.com/api/jsonBlob/${jsonBlobId}`, "GET");
         novels = novels || {}; // if novels is undefined, set it to an empty object
-        novels[novel_name] = novelsp[novel_name] || {
-            'characters': novels[novel_name]['characters'] || {},
-            'replaces': novels[novel_name]['replaces'] || {},
-            'settings': novels[novel_name]['settings'] || {}
+        novels[novel_name] = novels[novel_name] || {
+            'characters': novels?.[novel_name]?.characters || {},
+            'replaces': novels?.[novel_name]?.replaces || {},
+            'settings': novels?.[novel_name]?.settings || {}
         };
 
         saveCharacters();
         loadCharacters();
-        alert('تم التحديث');
     }
 }
 
-function httpGet(theUrl) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open('GET', theUrl, false);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.setRequestHeader("X-Master-Key", "$2b$10$477kB.r3XjCmssAJaM728ugWcpE8mXfMdZbwJJPYlT1v7nWrfA1d.");
-    xmlHttp.send(null);
-    return xmlHttp.responseText;
-}
-
-function httpPut(theUrl) {
-
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open('PUT', theUrl, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.setRequestHeader("X-Master-Key", "$2b$10$477kB.r3XjCmssAJaM728ugWcpE8mXfMdZbwJJPYlT1v7nWrfA1d.");
-    xmlHttp.send(JSON.stringify(novels));
-
+async function httpReq(theUrl, type, body) {
+    const res = await fetch(theUrl, {
+        method: type,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body
+    });
+    const result = await res.json();
+    if (res.status === 200) {
+        alert("✅ تمت العملية بنجاح");
+        console.log('📩 httpRes: ', result);
+    } else {
+        alert("❌ حدث خطأ");
+        console.log('❌ Error: ', await res.error());
+    }
+    return result;
 }
 
 
@@ -319,8 +289,8 @@ function loadCharacters() {
 
     try {
         chrome.storage.local.get('novels', (data) => {
-            console.log('name: ', novel_name);
-            console.log('local storage data', data);
+            console.log('🍅 novel name: ', novel_name);
+            console.log('🍅 local storage data', data);
             novels = data.novels || {}; // if novels is undefined, set it to an empty object
             if (novels[novel_name]) {
                 characters = novels[novel_name]['characters'];
@@ -334,7 +304,7 @@ function loadCharacters() {
             }
 
 
-            console.log(characters, replaces, settings);
+            console.log("🍅 loaded characters", { characters, replaces, settings });
 
 
 
@@ -538,5 +508,26 @@ function searchFor(_characters, _text) {
 }
 
 
+function sendTelegramBackup(data) {
+    var currentdate = new Date();
+    var datetime = currentdate.getDate() + "-"
+        + (currentdate.getMonth() + 1) + "-"
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + "-"
+        + currentdate.getMinutes() + "-"
+        + currentdate.getSeconds();
+    var chat_id = 547571285; // replace with yours
+    var enc_data = data;
+    var token = "5543097483:AAE7XUbXPQqwdu2CvbXDRKjRnn0_EJnJ6rw"; // from botfather
 
+    var blob = new Blob([enc_data], { type: 'plain/text' });
 
+    var formData = new FormData();
+    formData.append('chat_id', chat_id);
+    formData.append('document', blob, `kolnovels_backup ${datetime}.txt`);
+
+    var request = new XMLHttpRequest();
+    request.open('POST', `https://api.telegram.org/bot${token}/sendDocument`);
+    request.send(formData);
+
+};
