@@ -70,8 +70,8 @@ let novel_url = document.URL.split("/");
 let novel_name = "novel name";
 if (novel_url[2] == "sunovels.com") {
     novel_name = novel_url[4].replace("-", " ");
-} else if (novel_url[2] == "kolnovel.com") {
-    let novel_url_name = novel_url[novel_url.length - 2].split("-");
+} else if (novel_url[2] == "kolnovel.lol") {
+    let novel_url_name = novel_url.flat(-2).split("-");
     novel_url_name.pop();
     novel_name = novel_url_name.join(" ");
 } else if (novel_url[2] == "riwyat.com") {
@@ -85,7 +85,16 @@ if (novel_url[2] == "sunovels.com") {
 } else if ((novel_url[0] == "file:")) {
     novel_name = novel_url[novel_url.length - 2].replace("-", " ");
 }
-console.log('Kolnovels Extention✅', novel_name);
+
+console.log('Kolnovels Extention ✅', novel_name);
+novel_name = {
+    "semperors dominationz": "emperors domination",
+    "i can copy the talent": "your talent-is-mine"
+}?.[novel_name] || novel_name;
+console.log('MUTUAL NAME ✅', novel_name);
+
+
+
 
 let novels = {};
 let characters = {};
