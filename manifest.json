@@ -6,7 +6,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://kolnovel.lol/*/",
+                "https://kolnovel.me/*/",
                 "https://sunovels.com/novel/*/*",
                 "https://rewayat.club/*",
                 "https://riwyat.com/novel/*/*/",
