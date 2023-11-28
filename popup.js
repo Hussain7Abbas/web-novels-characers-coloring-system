@@ -34,7 +34,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let novel_url = tabs[0].url.split('/');
     if (novel_url[2] == 'sunovels.com') {
         novel_name = novel_url[4].replace('-', ' ');
-    } else if (novel_url[2] == "kolnovel.lol") {
+    } else if (novel_url[2] == "kolnovel.me") {
         let novel_url_name = novel_url.at(-2).split("-");
         novel_url_name.pop();
         novel_name = novel_url_name.join(" ");
