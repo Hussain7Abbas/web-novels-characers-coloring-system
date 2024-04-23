@@ -54,7 +54,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     console.log('Kolnovels Extention ✅', { novel_name, novel_url });
     novel_name = {
         "semperors dominationz": "emperors domination",
-        "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "spursuit-of-the-truthz",
+        "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "spursuit of the truthz",
         "i can copy the talent": "your talent-is-mine"
     }?.[novel_name] || novel_name;
     console.log('MUTUAL NAME ✅', novel_name);
