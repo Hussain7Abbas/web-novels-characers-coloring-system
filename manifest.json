@@ -12,7 +12,8 @@
                 "https://rewayat.club/*",
                 "https://riwyat.com/novel/*/*/",
                 "file:///home/*",
-                "https://www.mtlnovel.com/*/*/"
+                "https://www.mtlnovel.com/*/*/",
+                "https://ar-novel.com/novel/*/*/*/"
             ],
             "js": [
                 "content.js"

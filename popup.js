@@ -46,12 +46,15 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     } else if (novel_url[2] == "www.mtlnovel.com") {
         let novel_url_name = novel_url[3].split("-");
         novel_name = novel_url_name.join(" ");
+    } else if (novel_url[2] == "ar-novel.com") {
+        novel_name = novel_url[4];
     } else if ((novel_url[0] == "file:")) {
         novel_name = novel_url[novel_url.length - 2].replace("-", " ");
     }
-    console.log('Kolnovels Extention ✅', novel_name);
+    console.log('Kolnovels Extention ✅', { novel_name, novel_url });
     novel_name = {
         "semperors dominationz": "emperors domination",
+        "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "emperors domination",
         "i can copy the talent": "your talent-is-mine"
     }?.[novel_name] || novel_name;
     console.log('MUTUAL NAME ✅', novel_name);
