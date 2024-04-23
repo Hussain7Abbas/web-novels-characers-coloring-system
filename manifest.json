@@ -1,11 +1,12 @@
 {
     "manifest_version": 3,
     "name": "Kolnovels Characters Colors",
-    "version": "10.1.1",
+    "version": "10.1.2",
     "description": "Coloring novels' characters names",
     "content_scripts": [
         {
             "matches": [
+                "https://kolnovel.org/*/",
                 "https://kolnovel.me/*/",
                 "https://sunovels.com/novel/*/*",
                 "https://rewayat.club/*",

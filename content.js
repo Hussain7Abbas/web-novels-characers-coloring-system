@@ -70,7 +70,7 @@ let novel_url = document.URL.split("/");
 let novel_name = "novel name";
 if (novel_url[2] == "sunovels.com") {
     novel_name = novel_url[4].replace("-", " ");
-} else if (novel_url[2] == "kolnovel.me") {
+} else if (novel_url[2] == "kolnovel.me" || novel_url[2] == "kolnovel.org") {
     let novel_url_name = novel_url.at(-2).split("-");
     novel_url_name.pop();
     novel_name = novel_url_name.join(" ");

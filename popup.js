@@ -1,5 +1,5 @@
 
-let jsonBlobId = '1157229262708531200';
+let jsonBlobId = '1232273154717376512';
 
 var name_inp = document.getElementById('name_inp');
 var role_inp = document.getElementById('role_inp');
@@ -34,7 +34,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let novel_url = tabs[0].url.split('/');
     if (novel_url[2] == 'sunovels.com') {
         novel_name = novel_url[4].replace('-', ' ');
-    } else if (novel_url[2] == "kolnovel.me") {
+    } else if (novel_url[2] == "kolnovel.me" || novel_url[2] == "kolnovel.org") {
         let novel_url_name = novel_url.at(-2).split("-");
         novel_url_name.pop();
         novel_name = novel_url_name.join(" ");
