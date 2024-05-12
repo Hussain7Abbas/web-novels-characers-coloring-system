@@ -32,26 +32,27 @@ var last_modified_p = document.getElementById('last_modified_p');
 let novel_name = '';
 chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let novel_url = tabs[0].url.split('/');
-    if (novel_url[2] == 'sunovels.com') {
+    const siteName = novel_url[2].replace("www.", "").split(".").slice(0, -1).join(".");
+    if (siteName.includes("sunovels")) {
         novel_name = novel_url[4].replace('-', ' ');
-    } else if (novel_url[2] == "kolnovel.me" || novel_url[2] == "kolnovel.org") {
+    } else if (siteName.includes("kolnovel")) {
         let novel_url_name = novel_url.at(-2).split("-");
         novel_url_name.pop();
         novel_name = novel_url_name.join(" ");
-    } else if (novel_url[2] == "riwyat.com") {
+    } else if (siteName.includes("riwyat")) {
         novel_name = novel_url[novel_url.length - 3].replace("-", " ");
-    } else if (novel_url[2] == "rewayat.club") {
+    } else if (siteName.includes("rewayat")) {
         let novel_url_name = novel_url[4].split("-");
         novel_name = novel_url_name.join(" ");
-    } else if (novel_url[2] == "www.mtlnovel.com") {
+    } else if (siteName.includes("mtlnovel")) {
         let novel_url_name = novel_url[3].split("-");
         novel_name = novel_url_name.join(" ");
-    } else if (novel_url[2] == "ar-novel.com") {
+    } else if (siteName.includes("ar-novel")) {
         novel_name = novel_url[4];
     } else if ((novel_url[0] == "file:")) {
         novel_name = novel_url[novel_url.length - 2].replace("-", " ");
     }
-    console.log('Kolnovels Extention ✅', { novel_name, novel_url });
+    console.log('Kolnovels Extention ✅', { novel_name, novel_url, siteName });
     novel_name = {
         "semperors dominationz": "emperors domination",
         "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "spursuit of the truthz",
