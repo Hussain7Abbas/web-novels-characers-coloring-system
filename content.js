@@ -68,27 +68,29 @@ head.innerHTML = head.innerHTML + `<style>
 
 let novel_url = document.URL.split("/");
 let novel_name = "novel name";
-if (novel_url[2] == "sunovels.com") {
+const siteName = novel_url[2].replace("www.", "").split(".").slice(0, -1).join(".");
+
+if (siteName.includes("sunovels")) {
     novel_name = novel_url[4].replace("-", " ");
-} else if (novel_url[2] == "kolnovel.me" || novel_url[2] == "kolnovel.org") {
+} else if (siteName.includes("kolnovel")) {
     let novel_url_name = novel_url.at(-2).split("-");
     novel_url_name.pop();
     novel_name = novel_url_name.join(" ");
-} else if (novel_url[2] == "riwyat.com") {
+} else if (siteName.includes("riwyat")) {
     novel_name = novel_url[novel_url.length - 3].replace("-", " ");
-} else if (novel_url[2] == "rewayat.club") {
+} else if (siteName.includes("rewayat")) {
     let novel_url_name = novel_url[4].split("-");
     novel_name = novel_url_name.join(" ");
-} else if (novel_url[2] == "www.mtlnovel.com") {
+} else if (siteName.includes("mtlnovel")) {
     let novel_url_name = novel_url[3].split("-");
     novel_name = novel_url_name.join(" ");
-} else if (novel_url[2] == "ar-novel.com") {
+} else if (siteName.includes("ar-novel")) {
     novel_name = novel_url[4];
 } else if ((novel_url[0] == "file:")) {
     novel_name = novel_url[novel_url.length - 2].replace("-", " ");
 }
 
-console.log('Kolnovels Extention ✅', { novel_name, novel_url });
+console.log('Kolnovels Extention ✅', { siteName, novel_name, novel_url, });
 novel_name = {
     "semperors dominationz": "emperors domination",
     "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "spursuit of the truthz",
@@ -142,11 +144,8 @@ function replaceCharacters() {
 
 
     var tagsList = document.getElementsByClassName("epwrapper");
-    if (tagsList.length == 0) {
-        console.log('✅', 'not kolnovels');
-        tagsList = document.getElementsByTagName("p");
-    } else {
-        console.log('✅', 'it\'s kolnovels');
+
+    if (siteName === "kolnovel") {
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("strong", "p");
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h5", "p");
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h4", "p");
@@ -155,6 +154,14 @@ function replaceCharacters() {
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("h1", "p");
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;font-weight: bold;", " ");
         tagsList[0].innerHTML = tagsList[0].innerHTML.replaceAll("font-family: custom_font_1, serif;font-size: 18px;", " ");
+
+    } else if (siteName === "riwyat") {
+        const chapterBody = document.querySelector('.reading-content');
+        chapterBody.innerHTML = chapterBody.innerHTML.replaceAll(`<p style="text-align: center;">\n</p>`, "");
+        chapterBody.innerHTML = chapterBody.innerHTML.replaceAll(`&nbsp;`, "");
+        tagsList = chapterBody.getElementsByTagName("p");
+    } else {
+        tagsList = document.getElementsByTagName("p");
     }
 
 
