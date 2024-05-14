@@ -77,7 +77,7 @@ if (siteName.includes("sunovels")) {
     novel_url_name.pop();
     novel_name = novel_url_name.join(" ");
 } else if (siteName.includes("riwyat")) {
-    novel_name = novel_url[novel_url.length - 3].replace("-", " ");
+    novel_name = novel_url[4].replace("-", " ");
 } else if (siteName.includes("rewayat")) {
     let novel_url_name = novel_url[4].split("-");
     novel_name = novel_url_name.join(" ");
