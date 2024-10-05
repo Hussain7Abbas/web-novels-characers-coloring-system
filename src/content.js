@@ -144,7 +144,7 @@ function replaceCharacters() {
         for (const [key, char] of Object.entries(characters)) {
             para.innerHTML = para.innerHTML.replaceAll(char.name, `<span class="tooltip1 ${char.role}">
                 ${char.name}<span class="tooltiptext1">
-                <img src="${char.img}" onerror="this.onerror=null;this.src='https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg'"/>
+                <img src="${char.img}"/>
                 ${char.info}
                 </span>
                 </span>`);

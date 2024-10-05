@@ -370,9 +370,6 @@ function createRow(_char, _type = 'row') {
     if (_type == 'row') {
         var img = document.createElement('img');
         img.src = _char.img;
-        img.onerror = function () {
-            this.src = 'https://i.ibb.co/fp6tzKS/photo-2022-07-07-19-13-03.jpg';
-        };
         info_span.appendChild(img);
 
         info_span.appendChild(document.createTextNode(_char.info));
