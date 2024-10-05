@@ -14,9 +14,11 @@
                 "https://riwyat.org/novel/*/*/",
                 "file:///home/*",
                 "https://www.mtlnovel.com/*/*/",
-                "https://ar-novel.com/novel/*/*/*/"
+                "https://ar-novel.com/novel/*/*/*/",
+                "https://novelbin.com/b/*/*"
             ],
             "js": [
+                "./utils/general.js",
                 "content.js"
             ]
         }

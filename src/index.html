@@ -1,101 +1,174 @@
 <!DOCTYPE html>
 <html dir="rtl">
-
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>نظام تلوين الروايات</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel="icon" type="image/x-icon" href="/assets/icon.png">
-    <link rel='stylesheet' type='text/css' media='screen' href='popup.css'>
-    <link rel="stylesheet" href="./lib/simplebar/macOS_Scrollbar.css" />
-</head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/assets/icon.png"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="popup.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./lib/simplebar/macOS_Scrollbar.css"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="tab">
-        <button class="tablinks active" id="coloring_btn">تلوين</button>
-        <button class="tablinks" id="replacing_btn">استبدال</button>
+      <button class="tablinks active" id="coloring_btn">
+        تلوين
+      </button>
+      <button class="tablinks" id="replacing_btn">
+        استبدال
+      </button>
     </div>
 
-    <div id="coloring" class="tabcontent" style="display: block;">
-        <div class="_div">
-            <div class="_input_div">
-                <label>الاسم: </label>
-                <input id="name_inp" class="_input" type="text">
-            </div>
-
-            <div class="_input_div">
-                <label>الدور: </label>
-                <input id="role_inp" class="_input" list="roles">
-                <datalist id="roles">
-                    <option value="بطل">
-                    <option value="صديق">
-                    <option value="عدو">
-                    <option value="انثى">
-                    <option value="مهارة">
-                    <option value="مدرب">
-                    <option value="طائفة">
-                </datalist>
-            </div>
-
-            <div class="_input_div">
-                <label>وصف: </label>
-                <input id="info_inp" class="_input" type="text">
-            </div>
-            <div class="_input_div">
-                <label>الصورة: </label>
-                <input id="img_inp" class="_input" type="text">
-            </div>
-
-            <div class="_btn_div">
-                <button id="add_btn" class="_button" style="background-color: green;">اضافة شخصية</button>
-                <button id="delete_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف شخصية</button>
-            </div>
-            <div class="_btn_div">
-                <button id="fetch_btn" class="_button" style="background-color: purple;">استيراد</button>
-                <button id="put_btn" class="_button" style="background-color: purple;">تصدير</button>
-            </div>
-            <p class="_p" id="last_modified_p"></p>
-            <div class="_input_div">
-                <input id="search_inp" class="_input _search_inp" type="text" placeholder="نص البحث">
-            </div>
-            <div id="char_div" class="_char_div"></div>
+    <div
+      id="coloring"
+      class="tabcontent"
+      style="display: block"
+    >
+      <div class="_div">
+        <div class="_input_div">
+          <label>الاسم: </label>
+          <input id="name_inp" class="_input" type="text" />
         </div>
+
+        <div class="_input_div">
+          <label>الدور: </label>
+          <input
+            id="role_inp"
+            class="_input"
+            list="roles"
+          />
+          <datalist id="roles">
+            <option value="بطل"></option>
+            <option value="صديق"></option>
+            <option value="عدو"></option>
+            <option value="انثى"></option>
+            <option value="مهارة"></option>
+            <option value="مدرب"></option>
+            <option value="طائفة"></option>
+          </datalist>
+        </div>
+
+        <div class="_input_div">
+          <label>وصف: </label>
+          <input id="info_inp" class="_input" type="text" />
+        </div>
+        <div class="_input_div">
+          <label>الصورة: </label>
+          <input id="img_inp" class="_input" type="text" />
+        </div>
+
+        <div class="_btn_div">
+          <button
+            id="add_btn"
+            class="_button"
+            style="background-color: green"
+          >
+            اضافة شخصية
+          </button>
+          <button
+            id="delete_btn"
+            class="_button"
+            style="background-color: rgb(204, 40, 11)"
+          >
+            حذف شخصية
+          </button>
+        </div>
+        <div class="_btn_div">
+          <button
+            id="fetch_btn"
+            class="_button"
+            style="background-color: purple"
+          >
+            استيراد
+          </button>
+          <button
+            id="put_btn"
+            class="_button"
+            style="background-color: purple"
+          >
+            تصدير
+          </button>
+        </div>
+        <p class="_p" id="last_modified_p"></p>
+        <div class="_input_div">
+          <input
+            id="search_inp"
+            class="_input _search_inp"
+            type="text"
+            placeholder="نص البحث"
+          />
+        </div>
+        <div id="char_div" class="_char_div"></div>
+      </div>
     </div>
 
     <div id="replacing" class="tabcontent">
-        <div class="_div">
-            <div class="_input_div">
-                <label>الاسم: </label>
-                <input id="rep_name_inp" class="_input" type="text">
-            </div>
-
-            <div class="_input_div">
-                <label>استبدال بـ: </label>
-                <input id="rep_with_inp" class="_input" type="text">
-            </div>
-            <div class="_btn_div">
-                <button id="add_rep_btn" class="_button" style="background-color: green;">اضافة شخصية</button>
-                <button id="delete_rep_btn" class="_button" style="background-color: rgb(204, 40, 11);">حذف
-                    شخصية</button>
-            </div>
-            <div class="_input_div">
-                <input id="search_rep_inp" class="_input _search_inp" type="text" placeholder="نص البحث">
-            </div>
-            <div id="rep_char_div" class="_char_div"></div>
+      <div class="_div">
+        <div class="_input_div">
+          <label>الاسم: </label>
+          <input
+            id="rep_name_inp"
+            class="_input"
+            type="text"
+          />
         </div>
+
+        <div class="_input_div">
+          <label>استبدال بـ: </label>
+          <input
+            id="rep_with_inp"
+            class="_input"
+            type="text"
+          />
+        </div>
+        <div class="_btn_div">
+          <button
+            id="add_rep_btn"
+            class="_button"
+            style="background-color: green"
+          >
+            اضافة شخصية
+          </button>
+          <button
+            id="delete_rep_btn"
+            class="_button"
+            style="background-color: rgb(204, 40, 11)"
+          >
+            حذف شخصية
+          </button>
+        </div>
+        <div class="_input_div">
+          <input
+            id="search_rep_inp"
+            class="_input _search_inp"
+            type="text"
+            placeholder="نص البحث"
+          />
+        </div>
+        <div id="rep_char_div" class="_char_div"></div>
+      </div>
     </div>
 
-
-
-
-
-
-
-
-
-
-    <script src='popup.js' type='text/javascript'></script>
-</body>
-
+    <script src="popup.js" type="text/javascript"></script>
+    <script
+      src="./utils/general.js"
+      type="text/javascript"
+    ></script>
+  </body>
 </html>

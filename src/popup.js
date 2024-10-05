@@ -1,4 +1,3 @@
-
 let jsonBlobId = '1292018129465892864';
 
 var name_inp = document.getElementById('name_inp');
@@ -29,36 +28,10 @@ var search_rep_inp = document.getElementById('search_rep_inp');
 
 var last_modified_p = document.getElementById('last_modified_p');
 
-let novel_name = '';
+let novelName = '';
 chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let novel_url = tabs[0].url.split('/');
-    const siteName = novel_url[2].replace("www.", "").split(".").slice(0, -1).join(".");
-    if (siteName.includes("sunovels")) {
-        novel_name = novel_url[4].replace('-', ' ');
-    } else if (siteName.includes("kolnovel")) {
-        let novel_url_name = novel_url.at(-2).split("-");
-        novel_url_name.pop();
-        novel_name = novel_url_name.join(" ");
-    } else if (siteName.includes("riwyat")) {
-        novel_name = novel_url[4].replace("-", " ");
-    } else if (siteName.includes("rewayat")) {
-        let novel_url_name = novel_url[4].split("-");
-        novel_name = novel_url_name.join(" ");
-    } else if (siteName.includes("mtlnovel")) {
-        let novel_url_name = novel_url[3].split("-");
-        novel_name = novel_url_name.join(" ");
-    } else if (siteName.includes("ar-novel")) {
-        novel_name = novel_url[4];
-    } else if ((novel_url[0] == "file:")) {
-        novel_name = novel_url[novel_url.length - 2].replace("-", " ");
-    }
-    console.log('Kolnovels Extention ✅', { novel_name, novel_url, siteName });
-    novel_name = {
-        "semperors dominationz": "emperors domination",
-        "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "spursuit of the truthz",
-        "i can copy the talent": "your talent-is-mine"
-    }?.[novel_name] || novel_name;
-    console.log('MUTUAL NAME ✅', novel_name);
+    novelName = getNovelName(novel_url);
 });
 
 var date = new Date;
@@ -105,10 +78,10 @@ async function fetchNovels() {
     if (confirm('هل انت متاكد من عملية الاستيراد؟')) {
         novels = await httpReq(`https://jsonblob.com/api/jsonBlob/${jsonBlobId}`, "GET");
         novels = novels || {}; // if novels is undefined, set it to an empty object
-        novels[novel_name] = novels[novel_name] || {
-            'characters': novels?.[novel_name]?.characters || {},
-            'replaces': novels?.[novel_name]?.replaces || {},
-            'settings': novels?.[novel_name]?.settings || {}
+        novels[novelName] = novels[novelName] || {
+            'characters': novels?.[novelName]?.characters || {},
+            'replaces': novels?.[novelName]?.replaces || {},
+            'settings': novels?.[novelName]?.settings || {}
         };
 
         saveCharacters();
@@ -214,10 +187,10 @@ function deleteRep() {
 
 function saveCharacters() {
     // create the novel if it doesn't exist
-    console.log('✅novel_name', novel_name);
+    console.log('✅novel_name', novelName);
     console.log('✅novels', novels);
     novels = novels || {};  // if novels is undefined, set it to an empty object
-    novels[novel_name] = novels[novel_name] || { // if the novel doesn't exist, create it
+    novels[novelName] = novels[novelName] || { // if the novel doesn't exist, create it
         'characters': characters || {},
         'replaces': replaces || {},
         'settings': { 'last_modified': `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}` }
@@ -226,7 +199,7 @@ function saveCharacters() {
     chrome.storage.local.set({ 'novels': novels }, () => {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             var activeTab = tabs[0];
-            chrome.tabs.sendMessage(activeTab.id, novels[novel_name]);
+            chrome.tabs.sendMessage(activeTab.id, novels[novelName]);
         });
     });
 }
@@ -298,13 +271,13 @@ function loadCharacters() {
 
     try {
         chrome.storage.local.get('novels', (data) => {
-            console.log('🍅 novel name: ', novel_name);
+            console.log('🍅 novel name: ', novelName);
             console.log('🍅 local storage data', data);
             novels = data.novels || {}; // if novels is undefined, set it to an empty object
-            if (novels[novel_name]) {
-                characters = novels[novel_name]['characters'];
-                replaces = novels[novel_name]['replaces'];
-                settings = novels[novel_name]['settings'];
+            if (novels[novelName]) {
+                characters = novels[novelName]['characters'];
+                replaces = novels[novelName]['replaces'];
+                settings = novels[novelName]['settings'];
             } else {
                 characters = {};
                 replaces = {};

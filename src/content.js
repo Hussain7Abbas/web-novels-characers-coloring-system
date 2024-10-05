@@ -67,36 +67,8 @@ head.innerHTML = head.innerHTML + `<style>
 </style>`;
 
 let novel_url = document.URL.split("/");
-let novel_name = "novel name";
-const siteName = novel_url[2].replace("www.", "").split(".").slice(0, -1).join(".");
-
-if (siteName.includes("sunovels")) {
-    novel_name = novel_url[4].replace("-", " ");
-} else if (siteName.includes("kolnovel")) {
-    let novel_url_name = novel_url.at(-2).split("-");
-    novel_url_name.pop();
-    novel_name = novel_url_name.join(" ");
-} else if (siteName.includes("riwyat")) {
-    novel_name = novel_url[4].replace("-", " ");
-} else if (siteName.includes("rewayat")) {
-    let novel_url_name = novel_url[4].split("-");
-    novel_name = novel_url_name.join(" ");
-} else if (siteName.includes("mtlnovel")) {
-    let novel_url_name = novel_url[3].split("-");
-    novel_name = novel_url_name.join(" ");
-} else if (siteName.includes("ar-novel")) {
-    novel_name = novel_url[4];
-} else if ((novel_url[0] == "file:")) {
-    novel_name = novel_url[novel_url.length - 2].replace("-", " ");
-}
-
-console.log('Kolnovels Extention ✅', { siteName, novel_name, novel_url, });
-novel_name = {
-    "semperors dominationz": "emperors domination",
-    "%d8%a7%d9%84%d8%b3%d8%b9%d9%8a-%d9%88%d8%b1%d8%a7%d8%a1-%d8%a7%d9%84%d8%ad%d9%82%d9%8a%d9%82%d8%a9": "spursuit of the truthz",
-    "i can copy the talent": "your talent-is-mine"
-}?.[novel_name] || novel_name;
-console.log('MUTUAL NAME ✅', novel_name);
+const siteName = getSiteName(novel_url);
+let novelName = getNovelName(novel_url);
 
 
 
@@ -116,9 +88,9 @@ function loadCharacters() {
         chrome.storage.local.get("novels", (data) => {
             novels = data?.novels || {}; // if novels not exist create it
             console.log('✅local storage novels', data);
-            novels[novel_name] = novels[novel_name] || {}; // if a novel not exist create it
-            characters = novels[novel_name]['characters'] || {};
-            replaces = novels[novel_name]['replaces'] || {};
+            novels[novelName] = novels[novelName] || {}; // if a novel not exist create it
+            characters = novels[novelName]['characters'] || {};
+            replaces = novels[novelName]['replaces'] || {};
 
             replaceCharacters();
         });
