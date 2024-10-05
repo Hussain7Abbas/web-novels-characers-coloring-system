@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Kolnovels Characters Colors",
-    "version": "10.1.3",
+    "version": "10.2.0",
     "description": "Coloring novels' characters names",
     "content_scripts": [
         {
