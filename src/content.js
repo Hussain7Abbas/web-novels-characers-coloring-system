@@ -136,12 +136,15 @@ function replaceCharacters() {
         tagsList = document.getElementsByTagName("p");
     }
 
+    // sort the replaces and characters by name from longest to shortest
+    const replacesArray = Object.entries(replaces).sort((a, b) => b[1].name.length - a[1].name.length);
+    const charactersArray = Object.entries(characters).sort((a, b) => b[1].name.length - a[1].name.length);
 
     for (para of tagsList) {
-        for (const [key, rep] of Object.entries(replaces)) {
+        for (const [key, rep] of replacesArray) {
             para.innerHTML = para.innerHTML.replaceAll(rep.name, rep.with);
         }
-        for (const [key, char] of Object.entries(characters)) {
+        for (const [key, char] of charactersArray) {
             para.innerHTML = para.innerHTML.replaceAll(char.name, `<span class="tooltip1 ${char.role}">
                 ${char.name}<span class="tooltiptext1">
                 <img src="${char.img}"/>
