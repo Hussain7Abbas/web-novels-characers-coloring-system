@@ -2,7 +2,7 @@ function getNovelName(novel_url) {
   let novel_name = '';
 
   const siteName = getSiteName(novel_url);
-  if (["riwyat", "novelbin", "rewayat", "sunovels", "ar-novel"].includes(siteName)) {
+  if (["riwyat", "novelbin", "rewayat", "sunovels", "ar-novel", 'webnovel'].includes(siteName)) {
     novel_name = novel_url[4].replaceAll("-", " ");
   } else if (["kolnovel"].includes(siteName)) {
     let novel_url_name = novel_url.at(-2).split("-");

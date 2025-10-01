@@ -15,7 +15,8 @@
                 "file:///home/*",
                 "https://www.mtlnovel.com/*/*/",
                 "https://ar-novel.com/novel/*/*/*/",
-                "https://novelbin.com/b/*/*"
+                "https://novelbin.com/b/*/*",
+                "https://www.webnovel.com/book/*/*"
             ],
             "js": [
                 "./utils/general.js",
